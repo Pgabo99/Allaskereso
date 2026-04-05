@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,15 @@ Route::prefix('user')->group(function () {
         Route::post('/logout', [UserController::class, 'logout'])->name('user.logout');
     });
 });
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('job')->group(function () {
+        Route::post('/create', [JobController::class, 'create'])->name('job.create');
+        Route::get('/list', [JobController::class, 'index'])->name('job.list');
+    });
+});
+
+
 
 Route::get('/{any}', function () {
     return view('welcome');

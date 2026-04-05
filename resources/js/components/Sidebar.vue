@@ -9,6 +9,7 @@ import { isAuthenticated, logout } from '../services/auth';
         <nav class="space-y-2">
             <router-link v-if="!isAuthenticated" to="/login" class="block hover:bg-gray-700 p-2 rounded">Bejelentkezés</router-link>
             <router-link v-if="!isAuthenticated" to="/register" class="block hover:bg-gray-700 p-2 rounded">Regisztráció</router-link>
+            <router-link v-if="isAuthenticated" to="/job_create" class="block hover:bg-gray-700 p-2 rounded">Új munka hozzáadása</router-link>
             <button v-if="isAuthenticated" @click="logout" class="block hover:bg-gray-700 p-2 rounded">Kijelentkezés</button>
         </nav>
     </aside>

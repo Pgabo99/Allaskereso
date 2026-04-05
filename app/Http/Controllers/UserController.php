@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -52,7 +51,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function getLoggedInUser(): Authenticatable|null
+    public function getLoggedInUser(): ?User
     {
         if (Auth::check()) {
             return Auth::user();

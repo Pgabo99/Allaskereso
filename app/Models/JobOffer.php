@@ -3,12 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 
 class JobOffer extends Model
 {
     const TABLE = 'job_offer';
-    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

@@ -2,21 +2,26 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
+use MongoDB\Laravel\Eloquent\DocumentModel;
+use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Job extends Model
 {
-    const TABLE = 'job';
-    use Notifiable;
+    use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    use DocumentModel;
+    protected $table = 'job';
     protected $fillable = [
         'parent_job',
         'title',
     ];
+
+    public $casts = [
+        'created_time' => 'datetime',
+        'modified_time' => 'datetime',
+        'last_activity_date' => 'datetime',
+        'deleted' => 'int',
+    ];
+
 }
