@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import Sidebar from './components/Sidebar.vue'
+import { onMounted } from 'vue';
+import { loadUser } from './services/auth';
+
+onMounted(() => {
+    loadUser();
+});
 </script>
 
 <template>
