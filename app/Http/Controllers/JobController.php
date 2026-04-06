@@ -17,11 +17,15 @@ class JobController extends Controller
         return response()->json(['success' => true, 'job' => $job]);
     }
 
-    public function index(Request $request): Collection
+    public function index(): Collection
     {
-        $onlyMainJobs = $request->boolean('only_main_jobs');
-        return Job::select('id', 'title')->when($onlyMainJobs, function ($query) {
-            return $query->whereNull('parent_job');
-        })->get();
+        return Job::whereNull('parent_job')->with('children')->get();
+    }
+
+    public function destroy(Job $job): JsonResponse
+    {
+        $job->delete();
+
+        return response()->json(['success' => true]);
     }
 }

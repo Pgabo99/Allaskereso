@@ -5,6 +5,8 @@ namespace App\Models;
 use MongoDB\Laravel\Eloquent\DocumentModel;
 use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use MongoDB\Laravel\Relations\BelongsTo;
+use MongoDB\Laravel\Relations\HasMany;
 
 class Job extends Model
 {
@@ -17,11 +19,13 @@ class Job extends Model
         'title',
     ];
 
-    public $casts = [
-        'created_time' => 'datetime',
-        'modified_time' => 'datetime',
-        'last_activity_date' => 'datetime',
-        'deleted' => 'int',
-    ];
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Job::class, 'parent_job');
+    }
 
+    public function children(): HasMany
+    {
+        return $this->hasMany(Job::class, 'parent_job');
+    }
 }

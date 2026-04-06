@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 
 class Company extends Model
 {
@@ -16,7 +16,7 @@ class Company extends Model
     protected $fillable = [
         'name',
         'contact_email',
-        'registration_number',
+        'location',
         'tax_id',
         'created_by',
         'created_at',

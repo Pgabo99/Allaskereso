@@ -4,12 +4,15 @@ import { isAuthenticated, logout } from '../services/auth';
 
 <template>
     <aside class="w-56 h-screen bg-gray-800 text-white p-4">
-        <h2 class="text-xl font-bold mb-4">Menu</h2>
+        <h2 class="text-xl font-bold mb-4">Menü</h2>
 
         <nav class="space-y-2">
             <router-link v-if="!isAuthenticated" to="/login" class="block hover:bg-gray-700 p-2 rounded">Bejelentkezés</router-link>
             <router-link v-if="!isAuthenticated" to="/register" class="block hover:bg-gray-700 p-2 rounded">Regisztráció</router-link>
-            <router-link v-if="isAuthenticated" to="/job_create" class="block hover:bg-gray-700 p-2 rounded">Új munka hozzáadása</router-link>
+            <router-link v-if="isAuthenticated" to="/job_list" class="block hover:bg-gray-700 p-2 rounded">Munkakörök</router-link>
+            <router-link v-if="isAuthenticated" to="/job-offers" class="block hover:bg-gray-700 p-2 rounded">Álláshirdetések</router-link>
+            <router-link v-if="isAuthenticated" to="/job-offer/create" class="block hover:bg-gray-700 p-2 rounded">Álláshirdetések kezelése</router-link>
+            <router-link v-if="isAuthenticated" to="/company/create" class="block hover:bg-gray-700 p-2 rounded">Cégek</router-link>
             <button v-if="isAuthenticated" @click="logout" class="block hover:bg-gray-700 p-2 rounded">Kijelentkezés</button>
         </nav>
     </aside>

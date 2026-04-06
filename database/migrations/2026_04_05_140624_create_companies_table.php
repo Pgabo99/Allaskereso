@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 255);
             $table->string('contact_email', 255);
-            $table->string('registration_number', 255);
+            $table->string('location', 255);
             $table->string('tax_id', 20);
             $table->integer('created_by', false, true);
             $table->timestamps();

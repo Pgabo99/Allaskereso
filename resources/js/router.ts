@@ -1,20 +1,46 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { authInitialized, isAuthenticated, loadUser } from './services/auth'
 
 import Dashboard from './pages/Dashboard.vue'
 import Register from "./pages/auth/Register.vue";
 import Login from "./pages/auth/Login.vue";
 import JobCreate from "./pages/Jobs/JobCreate.vue";
+import JobList from "./pages/Jobs/JobList.vue";
+import JobOfferCreate from "./pages/JobOffers/JobOfferCreate.vue";
+import CompanyCreate from "./pages/Company/CompanyCreate.vue";
+import CompanyEmployees from "./pages/Company/CompanyEmployees.vue";
+import JobOffers from "./pages/JobOffers/JobOffers.vue";
+import JobOfferDetail from "./pages/JobOffers/JobOfferDetail.vue";
 
 const routes = [
-    { path: '/', component: Dashboard },
+    { path: '/', component: Dashboard, meta: { requiresAuth: true } },
     { path: '/register', component: Register },
     { path: '/login', component: Login },
-    { path: '/job_create', component: JobCreate },
+    { path: '/job_list', component: JobList, meta: { requiresAuth: true } },
+    { path: '/job-offers', component: JobOffers, meta: { requiresAuth: true } },
+    { path: '/job-offer/create', component: JobOfferCreate, meta: { requiresAuth: true } },
+    { path: '/job-offer/:id', component: JobOfferDetail, meta: { requiresAuth: true } },
+    { path: '/company/create', component: CompanyCreate, meta: { requiresAuth: true } },
+    { path: '/company/:id/employees', component: CompanyEmployees, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
 })
+
+router.beforeEach(async (to) => {
+    if (!authInitialized.value) {
+        await loadUser();
+    }
+
+    if (to.meta.requiresAuth && !isAuthenticated.value) {
+        return { path: '/login' };
+    }
+
+    if ((to.path === '/login' || to.path === '/register') && isAuthenticated.value) {
+        return { path: '/' };
+    }
+});
 
 export default router
