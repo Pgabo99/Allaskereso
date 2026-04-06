@@ -11,12 +11,12 @@ class JobOfferController extends Controller
 {
     public function index(): Collection
     {
-        return JobOffer::all();
+        return JobOffer::with('company')->get();
     }
 
     public function show(JobOffer $jobOffer): JsonResponse
     {
-        return response()->json($jobOffer);
+        return response()->json($jobOffer->load('company'));
     }
 
     public function store(JobOfferCreateRequest $request): JsonResponse

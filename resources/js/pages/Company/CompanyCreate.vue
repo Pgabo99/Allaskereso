@@ -22,6 +22,14 @@ const form = ref({
 const errors = ref<Record<string, string[]>>({});
 const generalError = ref('');
 const success = ref(false);
+const showForm = ref(false);
+
+const cancel = () => {
+    showForm.value = false;
+    errors.value = {};
+    generalError.value = '';
+    form.value = { name: '', contact_email: '', location: '', tax_id: '' };
+};
 
 const fetchCompanies = async () => {
     try {
@@ -41,6 +49,7 @@ const submit = async () => {
         await axiosInstance.post('company', form.value);
         success.value = true;
         form.value = { name: '', contact_email: '', location: '', tax_id: '' };
+        showForm.value = false;
         await fetchCompanies();
     } catch (e: any) {
         if (e.response?.status === 422) {
@@ -56,9 +65,15 @@ onMounted(fetchCompanies);
 
 <template>
     <div class="max-w-2xl mx-auto">
-        <h1 class="text-3xl text-slate-800 p-4">Cégek</h1>
+        <div class="flex items-center justify-between p-4">
+            <h1 class="text-3xl text-slate-800">Cégek</h1>
+            <button v-if="!showForm" @click="showForm = true"
+                class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
+                + Létrehozás
+            </button>
+        </div>
 
-        <form class="mx-4 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800 mb-6" @submit.prevent="submit">
+        <form v-if="showForm" class="mx-4 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800 mb-6" @submit.prevent="submit">
 
             <div v-if="success" class="mb-5 p-3 bg-green-100 text-green-800 rounded text-sm">
                 A cég sikeresen létrehozva.
@@ -98,10 +113,16 @@ onMounted(fetchCompanies);
                 </div>
             </div>
 
-            <button type="submit"
-                class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
-                Létrehozás
-            </button>
+            <div class="flex gap-3">
+                <button type="submit"
+                    class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
+                    Létrehozás
+                </button>
+                <button type="button" @click="cancel"
+                    class="box-border border border-gray-300 text-gray-700 hover:bg-gray-100 hover:cursor-pointer focus:ring-4 focus:ring-gray-200 shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
+                    Mégse
+                </button>
+            </div>
         </form>
 
         <div class="mx-4 p-4">

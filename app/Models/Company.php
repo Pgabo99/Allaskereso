@@ -6,7 +6,7 @@ use MongoDB\Laravel\Eloquent\Model;
 
 class Company extends Model
 {
-    const TABLE = 'company';
+    protected $table = 'company';
 
     /**
      * The attributes that are mass assignable.

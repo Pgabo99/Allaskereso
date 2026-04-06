@@ -9,9 +9,8 @@ import { isAuthenticated, logout } from '../services/auth';
         <nav class="space-y-2">
             <router-link v-if="!isAuthenticated" to="/login" class="block hover:bg-gray-700 p-2 rounded">Bejelentkezés</router-link>
             <router-link v-if="!isAuthenticated" to="/register" class="block hover:bg-gray-700 p-2 rounded">Regisztráció</router-link>
-            <router-link v-if="isAuthenticated" to="/job_list" class="block hover:bg-gray-700 p-2 rounded">Munkakörök</router-link>
             <router-link v-if="isAuthenticated" to="/job-offers" class="block hover:bg-gray-700 p-2 rounded">Álláshirdetések</router-link>
-            <router-link v-if="isAuthenticated" to="/job-offer/create" class="block hover:bg-gray-700 p-2 rounded">Álláshirdetések kezelése</router-link>
+            <router-link v-if="isAuthenticated" to="/job_list" class="block hover:bg-gray-700 p-2 rounded">Munkakörök</router-link>
             <router-link v-if="isAuthenticated" to="/company/create" class="block hover:bg-gray-700 p-2 rounded">Cégek</router-link>
             <button v-if="isAuthenticated" @click="logout" class="block hover:bg-gray-700 p-2 rounded">Kijelentkezés</button>
         </nav>

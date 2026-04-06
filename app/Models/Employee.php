@@ -7,7 +7,7 @@ use App\Models\User;
 
 class Employee extends Model
 {
-    const TABLE = 'employee';
+    protected $table = 'employee';
 
     /**
      * The attributes that are mass assignable.

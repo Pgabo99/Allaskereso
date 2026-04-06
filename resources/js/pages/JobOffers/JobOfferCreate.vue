@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axiosInstance from '../../../lib/axios';
 
 const route = useRoute();
+const router = useRouter();
 
 interface Job {
     id: string;
@@ -49,8 +50,7 @@ const submit = async () => {
     try {
         await axiosInstance.get('/sanctum/csrf-cookie');
         await axiosInstance.post('job-offer', form.value);
-        success.value = true;
-        form.value = { title: '', description: '', salary_min: 350000, salary_max: 500000, location: '', work_mode: 'ON_SITE', job_id: '' };
+        router.push('/company/create');
     } catch (e: any) {
         if (e.response?.status === 422) {
             errors.value = e.response.data.errors;

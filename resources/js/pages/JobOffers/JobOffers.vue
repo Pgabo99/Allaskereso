@@ -12,6 +12,7 @@ interface JobOffer {
     location: string;
     work_mode: string;
     job_id: string;
+    company?: { id: string; name: string };
 }
 
 const workModes = [
@@ -114,6 +115,7 @@ onMounted(fetchJobOffers);
                 :id="offer.id"
                 :title="offer.title"
                 :description="offer.description || offer.location + ' · ' + offer.salary_min.toLocaleString() + ' – ' + offer.salary_max.toLocaleString() + ' Ft'"
+                :company_name="offer.company?.name"
             />
         </div>
         <p v-if="filteredOffers.length === 0" class="text-body">Nincs elérhető álláshirdetés.</p>

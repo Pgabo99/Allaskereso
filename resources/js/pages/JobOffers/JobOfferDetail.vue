@@ -12,6 +12,7 @@ interface JobOffer {
     location: string;
     work_mode: string;
     job_id: string;
+    company?: { id: string; name: string };
 }
 
 const workModeLabels: Record<string, string> = {
@@ -46,7 +47,8 @@ onMounted(async () => {
         </div>
 
         <div v-else-if="jobOffer" class="bg-white border border-default rounded-lg shadow-xs p-8">
-            <h1 class="text-3xl font-semibold tracking-tight text-heading leading-8 mb-6">{{ jobOffer.title }}</h1>
+            <h1 class="text-3xl font-semibold tracking-tight text-heading leading-8 mb-1">{{ jobOffer.title }}</h1>
+            <p v-if="jobOffer.company" class="text-gray-500 mb-6">{{ jobOffer.company.name }}</p>
 
             <div class="flex flex-wrap gap-3 mb-6">
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">

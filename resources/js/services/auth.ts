@@ -10,7 +10,6 @@ export const authInitialized = ref(false);
 export const loadUser = async () => {
     try {
         const res = await axiosInstance.get('user/get-logged-in-user');
-        console.log(res.data)
         if (res.data) {
             user.value = res.data;
             isAuthenticated.value = true;
@@ -19,7 +18,6 @@ export const loadUser = async () => {
             isAuthenticated.value = false;
         }
     } catch (e) {
-        console.log(e)
         user.value = null;
         isAuthenticated.value = false;
     } finally {

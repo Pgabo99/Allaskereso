@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use MongoDB\Laravel\Eloquent\Model;
+use MongoDB\Laravel\Relations\BelongsTo;
 
 class JobOffer extends Model
 {
-    const TABLE = 'job_offer';
+    protected $table = 'job_offer';
 
     /**
      * The attributes that are mass assignable.
@@ -23,4 +24,9 @@ class JobOffer extends Model
         'work_mode',
         'job_id',
     ];
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
 }

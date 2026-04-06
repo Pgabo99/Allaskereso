@@ -3,12 +3,14 @@ defineProps<{
     id: string;
     title: string;
     description: string;
+    company_name?: string;
 }>();
 </script>
 
 <template>
     <div class="bg-neutral-primary-soft block p-6 border border-default rounded-base shadow-xs rounded-lg">
         <h5 class="mb-3 text-2xl font-semibold tracking-tight text-heading leading-8">{{ title }}</h5>
+        <p v-if="company_name" class="text-sm text-gray-500 mb-2">{{ company_name }}</p>
         <p class="text-body mb-6 line-clamp-5">{{ description }}</p>
         <router-link :to="`/job-offer/${id}`" class="inline-flex items-center text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
             Továbbiak

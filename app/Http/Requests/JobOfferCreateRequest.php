@@ -18,6 +18,7 @@ class JobOfferCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'company_id'  => 'required|string|exists:company,id',
             'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
             'salary_min'  => 'required|integer|min:0',
