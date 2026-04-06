@@ -32,7 +32,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('company')->group(function () {
         Route::get('/', [CompanyController::class, 'index'])->name('company.index');
         Route::post('/', [CompanyController::class, 'store'])->name('company.store');
+        Route::put('/{company}', [CompanyController::class, 'update'])->name('company.update');
+        Route::delete('/{company}', [CompanyController::class, 'destroy'])->name('company.destroy');
         Route::get('/{company}/employees', [CompanyController::class, 'employees'])->name('company.employees');
+        Route::post('/{company}/employees', [CompanyController::class, 'addEmployee'])->name('company.employees.add');
+        Route::post('/{company}/employees/register', [CompanyController::class, 'registerEmployee'])->name('company.employees.register');
     });
 
     Route::prefix('job-offer')->group(function () {
