@@ -21,10 +21,12 @@ onMounted(() => {
 <style scoped>
     .layout {
         display: flex;
+        min-height: 100vh;
     }
 
     .content {
         padding: 20px;
         flex: 1;
+        min-width: 0;
     }
 </style>

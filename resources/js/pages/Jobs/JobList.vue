@@ -11,6 +11,16 @@ interface Job {
 }
 
 const jobs = ref<Job[]>([]);
+const expanded = ref<string[]>([]);
+
+const toggle = (id: string) => {
+    const idx = expanded.value.indexOf(id);
+    if (idx === -1) {
+        expanded.value.push(id);
+    } else {
+        expanded.value.splice(idx, 1);
+    }
+};
 
 const fetchJobs = async () => {
     try {
@@ -46,26 +56,37 @@ onMounted(() => {
             </div>
             <div class="table-row-group">
                 <template v-for="job in jobs" :key="job.id">
-                    <div class="table-row">
-                        <div class="table-cell py-1 font-medium">{{ job.title }}</div>
-                    </div>
-                    <div
-                        v-for="child in job.children"
-                        :key="child.id"
-                        class="table-row"
-                    >
-                        <div class="table-cell py-1 pl-6 text-gray-600">
-                            <div class="flex items-center justify-between">
-                                <span>↳ {{ child.title }}</span>
-                                <button
-                                    @click="deleteJob(child.id)"
-                                    class="ml-4 text-red-500 hover:text-red-700 font-bold"
-                                >✕</button>
+                    <div class="table-row cursor-pointer hover:bg-gray-50" @click="toggle(job.id)">
+                        <div class="table-cell py-1 font-medium">
+                            <div class="flex items-center gap-2">
+                                <svg v-if="job.children.length" class="w-4 h-4 text-gray-400 transition-transform duration-200 shrink-0" :class="{ 'rotate-90': expanded.includes(job.id) }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                </svg>
+                                <span v-else class="w-4 shrink-0"></span>
+                                {{ job.title }}
                             </div>
                         </div>
                     </div>
+                    <template v-if="expanded.includes(job.id)">
+                        <div
+                            v-for="child in job.children"
+                            :key="child.id"
+                            class="table-row"
+                        >
+                            <div class="table-cell py-1 pl-10 text-gray-600">
+                                <div class="flex items-center justify-between">
+                                    <span>↳ {{ child.title }}</span>
+                                    <button
+                                        @click.stop="deleteJob(child.id)"
+                                        class="ml-4 text-red-500 hover:text-red-700 font-bold"
+                                    >✕</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </template>
             </div>
+            <p v-if="jobs.length === 0" class="text-body">Üres a munkakörök listája.</p>
         </div>
     </div>
 </template>

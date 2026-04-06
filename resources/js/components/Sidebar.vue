@@ -3,7 +3,7 @@ import { isAuthenticated, logout } from '../services/auth';
 </script>
 
 <template>
-    <aside class="w-56 h-screen bg-gray-800 text-white p-4">
+    <aside class="w-56 shrink-0 bg-gray-800 text-white p-4 sticky top-0 h-screen">
         <h2 class="text-xl font-bold mb-4">Menü</h2>
 
         <nav class="space-y-2">

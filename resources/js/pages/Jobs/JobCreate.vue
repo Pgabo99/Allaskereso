@@ -36,6 +36,7 @@ const createJob = async (payload: JobCreateForm) => {
         if (response.data.success) {
             form.parent_job = null;
             form.title = '';
+            await loadJobs();
             emit("jobCreated");
         } else {
             generalError.value = response.data.message || 'Hiba történt';
