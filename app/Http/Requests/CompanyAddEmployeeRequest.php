@@ -19,8 +19,8 @@ class CompanyAddEmployeeRequest extends FormRequest
     {
         return [
             'identifier' => 'required|string',
-            'rights'     => 'array',
-            'rights.*'   => 'string|in:CREATE_JOB_OFFER,HANDLE_APPLICATIONS,EDIT_COMPANY_DATA',
+            'rights' => 'array',
+            'rights.*' => 'string|in:CREATE_JOB_OFFER,HANDLE_APPLICATIONS,EDIT_COMPANY_DATA',
         ];
     }
 
@@ -28,7 +28,7 @@ class CompanyAddEmployeeRequest extends FormRequest
     {
         return [
             'identifier.required' => 'Az email cím vagy felhasználónév kötelező.',
-            'rights.*.in'         => 'Érvénytelen jogosultság.',
+            'rights.*.in' => 'Érvénytelen jogosultság.',
         ];
     }
 }

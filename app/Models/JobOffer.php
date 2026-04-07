@@ -29,4 +29,9 @@ class JobOffer extends Model
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
+
+    public function job(): BelongsTo
+    {
+        return $this->belongsTo(Job::class, 'job_id');
+    }
 }

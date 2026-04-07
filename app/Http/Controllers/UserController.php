@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use App\UserRoleEnum;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+
 class UserController extends Controller
 {
-    public function register(RegisterRequest $request): JsonResponse {
+    public function register(RegisterRequest $request): JsonResponse
+    {
 
         if (Auth::check()) {
             return response()->json([
@@ -20,6 +23,7 @@ class UserController extends Controller
         }
 
         $userParams = $request->validated();
+        $userParams['role'] = UserRoleEnum::USER;
 
         $user = User::create($userParams);
 

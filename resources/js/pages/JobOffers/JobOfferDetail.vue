@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import {ref, onMounted} from 'vue';
+import {useRoute} from 'vue-router';
 import axiosInstance from '../../../lib/axios';
 
 interface JobOffer {
@@ -39,7 +39,8 @@ onMounted(async () => {
 
 <template>
     <div class="max-w-2xl mx-auto p-6">
-        <router-link to="/job-offers" class="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 mb-4">
+        <router-link to="/job-offers"
+                     class="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 mb-4">
             ← Vissza az álláshirdetésekhez
         </router-link>
         <div v-if="notFound" class="p-3 bg-red-100 text-red-800 rounded text-sm">

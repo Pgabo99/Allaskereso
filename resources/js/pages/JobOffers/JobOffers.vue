@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import {ref, computed, onMounted} from 'vue';
 import axiosInstance from '../../../lib/axios';
-import JobCard from '../../components/JobCard.vue';
+import JobCard from './JobCard.vue';
 
 interface JobOffer {
     id: string;
@@ -16,9 +16,9 @@ interface JobOffer {
 }
 
 const workModes = [
-    { value: 'ON_SITE', label: 'Irodai' },
-    { value: 'REMOTE', label: 'Távoli' },
-    { value: 'HYBRID', label: 'Hibrid' },
+    {value: 'ON_SITE', label: 'Irodai'},
+    {value: 'REMOTE', label: 'Távoli'},
+    {value: 'HYBRID', label: 'Hibrid'},
 ];
 
 const jobOffers = ref<JobOffer[]>([]);
@@ -66,19 +66,26 @@ onMounted(fetchJobOffers);
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-3xl text-slate-800">Álláshirdetések</h1>
             <button @click="showFilters = !showFilters"
-                class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none inline-flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/></svg>
+                    class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
+                </svg>
                 Szűrés
             </button>
         </div>
 
-        <form v-if="showFilters" class="bg-white border border-default rounded-lg shadow-xs p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" @submit.prevent>
+        <form v-if="showFilters"
+              class="bg-white border border-default rounded-lg shadow-xs p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+              @submit.prevent>
             <div class="relative z-0 w-full group">
                 <input
                     id="filter_search" v-model="filters.search" type="text" placeholder=" "
                     class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"
                 />
-                <label for="filter_search" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 peer-focus:z-10 peer-[&:not(:placeholder-shown)]:z-10 origin-[0] peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Keresés</label>
+                <label for="filter_search"
+                       class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 peer-focus:z-10 peer-[&:not(:placeholder-shown)]:z-10 origin-[0] peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Keresés</label>
             </div>
 
             <div class="relative z-0 w-full group">
@@ -86,7 +93,8 @@ onMounted(fetchJobOffers);
                     id="filter_location" v-model="filters.location" type="text" placeholder=" "
                     class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"
                 />
-                <label for="filter_location" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 peer-focus:z-10 peer-[&:not(:placeholder-shown)]:z-10 origin-[0] peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Helyszín</label>
+                <label for="filter_location"
+                       class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 peer-focus:z-10 peer-[&:not(:placeholder-shown)]:z-10 origin-[0] peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Helyszín</label>
             </div>
 
             <div class="relative z-0 w-full group">
@@ -104,7 +112,9 @@ onMounted(fetchJobOffers);
                     id="filter_salary" v-model="filters.salary_min" type="number" min="0" placeholder=" " step="10000"
                     class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"
                 />
-                <label for="filter_salary" class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 peer-focus:z-10 peer-[&:not(:placeholder-shown)]:z-10 origin-[0] peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Min. fizetés (Ft)</label>
+                <label for="filter_salary"
+                       class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 peer-focus:z-10 peer-[&:not(:placeholder-shown)]:z-10 origin-[0] peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Min.
+                    fizetés (Ft)</label>
             </div>
         </form>
 

@@ -28,4 +28,9 @@ class Job extends Model
     {
         return $this->hasMany(Job::class, 'parent_job');
     }
+
+    public function JobOffer(): HasMany
+    {
+        return $this->hasMany(JobOffer::class, 'job_id');
+    }
 }

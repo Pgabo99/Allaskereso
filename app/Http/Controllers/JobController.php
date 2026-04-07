@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 
 class JobController extends Controller
 {
-    public function create(JobCreateRequest $request): JsonResponse {
+    public function create(JobCreateRequest $request): JsonResponse
+    {
         $validated = $request->validated();
         $job = Job::firstOrCreate($validated);
 

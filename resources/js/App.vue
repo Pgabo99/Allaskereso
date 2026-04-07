@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Sidebar from './components/Sidebar.vue'
-import { onMounted } from 'vue';
-import { loadUser } from './services/auth';
+import {onMounted} from 'vue';
+import {loadUser} from './services/auth';
 
 onMounted(() => {
     loadUser();
@@ -10,23 +10,23 @@ onMounted(() => {
 
 <template>
     <div class="layout">
-        <Sidebar />
+        <Sidebar/>
 
         <main class="content">
-            <router-view />
+            <router-view/>
         </main>
     </div>
 </template>
 
 <style scoped>
-    .layout {
-        display: flex;
-        min-height: 100vh;
-    }
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
 
-    .content {
-        padding: 20px;
-        flex: 1;
-        min-width: 0;
-    }
+.content {
+    padding: 20px;
+    flex: 1;
+    min-width: 0;
+}
 </style>

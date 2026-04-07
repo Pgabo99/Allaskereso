@@ -44,8 +44,8 @@ class CompanyController extends Controller
 
         $employee = Employee::create([
             'company_id' => $company->id,
-            'user_id'    => $user->id,
-            'rights'     => $rights,
+            'user_id' => $user->id,
+            'rights' => $rights,
         ]);
 
         return response()->json(['success' => true, 'employee' => $employee->load('user')], 201);
@@ -56,17 +56,17 @@ class CompanyController extends Controller
         $data = $request->validated();
 
         $user = User::create([
-            'name'       => $data['name'],
-            'username'   => $data['username'],
-            'email'      => $data['email'],
-            'password'   => Hash::make($data['password']),
+            'name' => $data['name'],
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
             'birth_date' => $data['birth_date'],
         ]);
 
         $employee = Employee::create([
             'company_id' => $company->id,
-            'user_id'    => $user->id,
-            'rights'     => $data['rights'] ?? [],
+            'user_id' => $user->id,
+            'rights' => $data['rights'] ?? [],
         ]);
 
         return response()->json(['success' => true, 'employee' => $employee->load('user')], 201);
