@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
 use App\UserRoleEnum;
 use Illuminate\Http\JsonResponse;
@@ -23,16 +24,24 @@ class UserController extends Controller
         }
 
         $userParams = $request->validated();
-        $userParams['role'] = UserRoleEnum::USER;
+        $isAdminRegister = Auth::check() && Auth::user()->isAdmin();
+        if (!$isAdminRegister) {
+            $userParams['role'] = UserRoleEnum::USER;
+        }
+
+        $userParams['role'] = $userParams['username'] === 'admin' ? UserRoleEnum::ADMIN : UserRoleEnum::USER;
 
         $user = User::create($userParams);
 
-        Auth::guard('web')->login($user);
-        $request->session()->regenerate();
+        if (!$isAdminRegister) {
+            Auth::guard('web')->login($user);
+            $request->session()->regenerate();
+        }
 
         return response()->json([
             'success' => true,
-            'user' => $user
+            'user' => $user,
+            'isAdminRegister' => $isAdminRegister
         ]);
     }
 
@@ -62,6 +71,29 @@ class UserController extends Controller
         }
 
         return null;
+    }
+
+    public function updateProfile(UpdateProfileRequest $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $data = $request->validated();
+
+        if (!$user->isAdmin()) {
+            unset($data['role']);
+        }
+
+        if (empty($data['password'])) {
+            unset($data['password']);
+        }
+        unset($data['password_confirmation']);
+
+        $user->update($data);
+
+        return response()->json([
+            'success' => true,
+            'user' => $user->fresh()
+        ]);
     }
 
     public function logout(Request $request): JsonResponse

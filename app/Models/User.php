@@ -6,7 +6,6 @@ namespace App\Models;
 use App\UserRoleEnum;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Tests\Integration\Database\EloquentPivotWithoutTimestampTest\UserRole;
 use Laravel\Sanctum\HasApiTokens;
 use MongoDB\Laravel\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -54,12 +53,20 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRoleEnum::class,
         ];
     }
+
+    protected $appends = ['is_admin'];
 
     public function isAdmin(): bool
     {
         return $this->role === UserRoleEnum::ADMIN;
+    }
+
+    public function getIsAdminAttribute()
+    {
+        return $this->isAdmin();
     }
 
     public function employee(): HasMany

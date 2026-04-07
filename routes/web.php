@@ -18,6 +18,7 @@ Route::prefix('user')->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/get-logged-in-user', [UserController::class, 'getLoggedInUser'])->name('user.get_logged_in_user');
+        Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.update_profile');
         Route::post('/logout', [UserController::class, 'logout'])->name('user.logout');
     });
 });

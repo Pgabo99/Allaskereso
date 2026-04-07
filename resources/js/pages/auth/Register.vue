@@ -32,8 +32,10 @@ const maxDate = new Date(
 
 const errors = ref<Record<string, string[]>>({});
 const generalError = ref('');
+const success = ref(false);
 
 const register = async (payload: RegisterForm) => {
+    success.value = false;
     errors.value = {};
     generalError.value = '';
     await axiosInstance.get("/sanctum/csrf-cookie", {
@@ -42,9 +44,13 @@ const register = async (payload: RegisterForm) => {
     try {
         const response = await axiosInstance.post("user/register", payload);
         if (response.data.success) {
-            user.value = response.data.user;
-            isAuthenticated.value = true;
-            await router.push('/');
+            if (response.data.isAdminRegister) {
+                success.value = true;
+            } else {
+                user.value = response.data.user;
+                isAuthenticated.value = true;
+                await router.push('/');
+            }
         } else {
             generalError.value = response.data.message || 'Hiba történt';
         }
@@ -63,6 +69,10 @@ const register = async (payload: RegisterForm) => {
         <h1 class="text-3xl text-slate-800 p-4">Regisztráció</h1>
         <form class="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md dark:bg-gray-800"
               @submit.prevent="register(form)">
+
+            <div v-if="showSuccess" class="mb-5 p-3 bg-green-100 text-green-800 rounded text-sm">
+                A cég sikeresen létrehozva.
+            </div>
 
             <div v-if="generalError" class="mb-5 p-3 bg-red-100 text-red-800 rounded text-sm">
                 {{ generalError }}

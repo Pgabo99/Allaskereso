@@ -11,6 +11,7 @@ import CompanyCreate from "./pages/Company/CompanyCreate.vue";
 import CompanyEmployees from "./pages/Company/CompanyEmployees.vue";
 import JobOffers from "./pages/JobOffers/JobOffers.vue";
 import JobOfferDetail from "./pages/JobOffers/JobOfferDetail.vue";
+import Profile from "./pages/Profile/Profile.vue";
 
 const routes = [
     {path: '/', component: Dashboard, meta: {requiresAuth: true}},
@@ -22,6 +23,7 @@ const routes = [
     {path: '/job-offer/:id', component: JobOfferDetail, meta: {requiresAuth: true}},
     {path: '/company/create', component: CompanyCreate, meta: {requiresAuth: true}},
     {path: '/company/:id/employees', component: CompanyEmployees, meta: {requiresAuth: true}},
+    {path: '/profile', component: Profile, meta: {requiresAuth: true}},
 ]
 
 const router = createRouter({

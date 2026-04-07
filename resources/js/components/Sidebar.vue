@@ -13,6 +13,7 @@ import { isAuthenticated, logout } from '../services/auth';
             <router-link v-if="isAuthenticated" to="/job-offer/create" class="block hover:bg-gray-700 p-2 rounded">Álláshirdetések kezelése</router-link>
             <router-link v-if="isAuthenticated" to="/job_list" class="block hover:bg-gray-700 p-2 rounded">Munkakörök</router-link>
             <router-link v-if="isAuthenticated" to="/company/create" class="block hover:bg-gray-700 p-2 rounded">Cégek</router-link>
+            <router-link v-if="isAuthenticated" to="/profile" class="block hover:bg-gray-700 p-2 rounded">Profilom</router-link>
             <button v-if="isAuthenticated" @click="logout" class="block hover:bg-gray-700 p-2 rounded">Kijelentkezés</button>
         </nav>
     </aside>
