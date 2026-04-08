@@ -20,6 +20,7 @@ const route = useRoute();
 const employees = ref<Employee[]>([]);
 const showForm = ref(false);
 const canEditCompany = ref(false);
+const ownerId = ref('');
 const showRegisterForm = ref(false);
 const generalError = ref('');
 const registerGeneralError = ref('');
@@ -68,6 +69,7 @@ const fetchEmployees = async () => {
         const response = await axiosInstance.get(`company/${route.params.id}/employees`);
         employees.value = response.data.employees;
         canEditCompany.value = response.data.canEditCompany;
+        ownerId.value = response.data.ownerId;
     } catch (e) {
         console.error(e);
     }
@@ -330,15 +332,18 @@ onMounted(fetchEmployees);
                                   class="inline-block px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-700">
                                 {{ rightsOptions.find(o => o.value === right)?.label ?? right }}
                             </span>
-                            <span v-if="!employee.rights?.length" class="text-gray-400">–</span>
-                            <button v-if="canEditCompany" type="button" @click="startEditRights(employee)"
+                            <span v-if="employee.user_id === ownerId" class="inline-block px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-700">
+                                Tulaj
+                            </span>
+                            <span v-if="!employee.rights?.length && employee.user_id !== ownerId" class="text-gray-400">–</span>
+                            <button v-if="canEditCompany && employee.user_id !== ownerId" type="button" @click="startEditRights(employee)"
                                     class="text-gray-400 hover:text-gray-700 hover:cursor-pointer focus:outline-none text-xs ml-1"
                                     title="Jogosultságok szerkesztése">
                                 ✎
                             </button>
                         </div>
                     </td>
-                    <td v-if="canEditCompany" class="py-2 text-right">
+                    <td v-if="canEditCompany && employee.user_id !== ownerId" class="py-2 text-right">
                         <button @click="removeEmployee(employee.id)"
                                 class="text-gray-400 hover:text-red-600 hover:cursor-pointer focus:outline-none"
                                 title="Eltávolítás">

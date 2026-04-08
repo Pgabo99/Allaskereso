@@ -30,6 +30,7 @@ class CompanyController extends Controller
     {
         $return['employees'] = Employee::where('company_id', $company->id)->with('user')->get();
         $return['canEditCompany'] = $company->can_edit_company;
+        $return['ownerId'] = $company->created_by;
 
         return response()->json($return);
     }
