@@ -12,6 +12,7 @@ import CompanyEmployees from "./pages/Company/CompanyEmployees.vue";
 import JobOffers from "./pages/JobOffers/JobOffers.vue";
 import JobOfferDetail from "./pages/JobOffers/JobOfferDetail.vue";
 import Profile from "./pages/Profile/Profile.vue";
+import MyApplications from "./pages/Applications/MyApplications.vue";
 
 const routes = [
     {path: '/', component: Dashboard, meta: {requiresAuth: true}},
@@ -24,6 +25,7 @@ const routes = [
     {path: '/company/create', component: CompanyCreate, meta: {requiresAuth: true}},
     {path: '/company/:id/employees', component: CompanyEmployees, meta: {requiresAuth: true}},
     {path: '/profile', component: Profile, meta: {requiresAuth: true}},
+    {path: '/my-applications', component: MyApplications, meta: {requiresAuth: true}},
 ]
 
 const router = createRouter({

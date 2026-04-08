@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\JobOfferController;
@@ -42,6 +43,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/{company}/employees/{employee}', [CompanyController::class, 'updateEmployee'])->name('company.employees.update');
         Route::delete('/{company}/employees/{employee}', [CompanyController::class, 'removeEmployee'])->name('company.employees.remove');
     });
+
+    Route::get('/application', [ApplicationController::class, 'index'])->name('application.index');
+    Route::post('/application', [ApplicationController::class, 'store'])->name('application.store');
+    Route::delete('/application/{application}', [ApplicationController::class, 'destroy'])->name('application.destroy');
+    Route::get('/job-offer/{jobOffer}/applications', [ApplicationController::class, 'forJobOffer'])->name('application.for_job_offer');
+    Route::patch('/application/{application}/status', [ApplicationController::class, 'updateStatus'])->name('application.update_status');
 
     Route::prefix('job-offer')->group(function () {
         Route::get('/', [JobOfferController::class, 'index'])->name('job_offer.index');

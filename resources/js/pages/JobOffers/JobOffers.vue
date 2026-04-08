@@ -3,6 +3,17 @@ import {ref, computed, onMounted} from 'vue';
 import axiosInstance from '../../../lib/axios';
 import JobCard from './JobCard.vue';
 
+const withdraw = async (applicationId: string) => {
+    if (!confirm('Biztosan visszavonod a jelentkezésedet?')) return;
+    await axiosInstance.get('/sanctum/csrf-cookie');
+    await axiosInstance.delete(`application/${applicationId}`);
+    const offer = jobOffers.value.find(o => o.application_id === applicationId);
+    if (offer) {
+        offer.application_id = undefined;
+        offer.application_status = undefined;
+    }
+};
+
 interface JobOffer {
     id: string;
     title: string;
@@ -13,6 +24,8 @@ interface JobOffer {
     work_mode: string;
     job_id: string;
     company?: { id: string; name: string };
+    application_id?: string;
+    application_status?: 'PENDING' | 'APPROVED' | 'DECLINED';
 }
 
 const workModes = [
@@ -118,7 +131,7 @@ onMounted(fetchJobOffers);
             </div>
         </form>
 
-        <div class="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
+        <div class="grid gap-4 [grid-template-columns:repeat(auto-fill,400px)]">
             <JobCard
                 v-for="offer in filteredOffers"
                 :key="offer.id"
@@ -126,6 +139,9 @@ onMounted(fetchJobOffers);
                 :title="offer.title"
                 :description="offer.description || offer.location + ' · ' + offer.salary_min.toLocaleString() + ' – ' + offer.salary_max.toLocaleString() + ' Ft'"
                 :company_name="offer.company?.name"
+                :status="offer.application_status"
+                :application-id="offer.application_id"
+                @withdraw="withdraw"
             />
         </div>
         <p v-if="filteredOffers.length === 0" class="text-body">Nincs elérhető álláshirdetés.</p>

@@ -38,7 +38,7 @@ class Company extends Model
         return $this->hasMany(Employee::class, 'company_id');
     }
 
-    protected $appends = ['is_own_company', 'can_edit_company', 'can_create_job_offers'];
+    protected $appends = ['is_own_company', 'can_edit_company', 'can_create_job_offers', 'can_handle_applications'];
 
     public function getIsOwnCompanyAttribute(): bool
     {
@@ -62,6 +62,16 @@ class Company extends Model
             || $this->employees()
                 ->where('user_id', Auth::id())
                 ->where('rights', EmployeeRoleEnum::EDIT_COMPANY_DATA->value)
+                ->exists();
+    }
+
+    public function getCanHandleApplicationsAttribute(): bool
+    {
+        return Auth::user()->isAdmin()
+            || $this->getIsOwnCompanyAttribute()
+            || $this->employees()
+                ->where('user_id', Auth::id())
+                ->where('rights', EmployeeRoleEnum::HANDLE_APPLICATIONS->value)
                 ->exists();
     }
 

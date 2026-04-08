@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\JobOfferCreateRequest;
+use App\Models\Application;
 use App\Models\JobOffer;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class JobOfferController extends Controller
 {
-    public function index(Request $request): Collection
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $query = JobOffer::with('company');
 
@@ -18,12 +20,37 @@ class JobOfferController extends Controller
             $query->where('company_id', $request->company_id);
         }
 
-        return $query->get();
+        $offers = $query->get();
+
+        $applications = Application::where('user_id', Auth::id())
+            ->whereIn('job_offer_id', $offers->pluck('id'))
+            ->get()
+            ->keyBy('job_offer_id');
+
+        $offers = $offers->map(function ($offer) use ($applications) {
+            $application = $applications->get($offer->id);
+            return array_merge($offer->toArray(), [
+                'application_id'     => $application?->id,
+                'application_status' => $application?->status,
+            ]);
+        });
+
+        return response()->json($offers);
     }
 
     public function show(JobOffer $jobOffer): JsonResponse
     {
-        return response()->json($jobOffer->load('company'));
+        $jobOffer->load('company');
+
+        $application = Application::where('user_id', Auth::id())
+            ->where('job_offer_id', $jobOffer->id)
+            ->first();
+
+        return response()->json(array_merge($jobOffer->toArray(), [
+            'application_id'          => $application?->id,
+            'application_status'      => $application?->status,
+            'can_handle_applications' => $jobOffer->company?->can_handle_applications ?? false,
+        ]));
     }
 
     public function store(JobOfferCreateRequest $request): JsonResponse
