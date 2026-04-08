@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import axiosInstance from '../../../lib/axios';
-import { user, loadUser } from '../../services/auth';
+import { user, loadUser, isAdmin } from '../../services/auth';
 
 const form = ref({
     name: '',
@@ -107,7 +107,7 @@ const submit = async () => {
                 </div>
             </div>
 
-            <div v-if="user.value?.is_admin" class="relative z-0 w-full mb-5 group">
+            <div v-if="isAdmin" class="relative z-0 w-full mb-5 group">
                 <select id="profile_role" v-model="form.role"
                         class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand">
                     <option value="USER">USER</option>

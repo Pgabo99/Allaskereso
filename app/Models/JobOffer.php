@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use MongoDB\Laravel\Eloquent\Model;
 use MongoDB\Laravel\Relations\BelongsTo;
 
@@ -25,6 +26,8 @@ class JobOffer extends Model
         'job_id',
     ];
 
+    protected $appends = ['has_right_to_edit'];
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'company_id');
@@ -33,5 +36,21 @@ class JobOffer extends Model
     public function job(): BelongsTo
     {
         return $this->belongsTo(Job::class, 'job_id');
+    }
+
+    public function getHasRightToEditAttribute(): bool
+    {
+        $user = Auth::user();
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        $company = $this->company;
+
+        if ($company->is_own_company || $company->can_create_job_offers) {
+            return true;
+        }
+
+        return false;
     }
 }

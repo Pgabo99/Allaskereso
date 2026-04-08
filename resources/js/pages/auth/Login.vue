@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import axiosInstance from "../../../lib/axios";
 import {reactive, ref} from "vue";
-import {isAuthenticated, user} from '../../services/auth';
+import {isAuthenticated, user, isAdmin} from '../../services/auth';
 import router from "../../router";
 
 interface LoginForm {
@@ -28,6 +28,7 @@ const login = async (payload: LoginForm) => {
         if (response.data.success === true) {
             user.value = response.data.user;
             isAuthenticated.value = true;
+            isAdmin.value = user.value.is_admin;
             await router.push('/');
         } else {
             generalError.value = response.data.message || 'Hiba történt';

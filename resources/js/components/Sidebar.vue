@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isAuthenticated, logout } from '../services/auth';
+import { isAuthenticated, logout, isAdmin } from '../services/auth';
 </script>
 
 <template>
@@ -10,10 +10,10 @@ import { isAuthenticated, logout } from '../services/auth';
             <router-link v-if="!isAuthenticated" to="/login" class="block hover:bg-gray-700 p-2 rounded">Bejelentkezés</router-link>
             <router-link v-if="!isAuthenticated" to="/register" class="block hover:bg-gray-700 p-2 rounded">Regisztráció</router-link>
             <router-link v-if="isAuthenticated" to="/job-offers" class="block hover:bg-gray-700 p-2 rounded">Álláshirdetések</router-link>
-            <router-link v-if="isAuthenticated" to="/job-offer/create" class="block hover:bg-gray-700 p-2 rounded">Álláshirdetések kezelése</router-link>
-            <router-link v-if="isAuthenticated" to="/job_list" class="block hover:bg-gray-700 p-2 rounded">Munkakörök</router-link>
             <router-link v-if="isAuthenticated" to="/company/create" class="block hover:bg-gray-700 p-2 rounded">Cégek</router-link>
             <router-link v-if="isAuthenticated" to="/profile" class="block hover:bg-gray-700 p-2 rounded">Profilom</router-link>
+            <router-link v-if="isAdmin" to="/job-offer/create" class="block hover:bg-gray-700 p-2 rounded">Álláshirdetések kezelése</router-link>
+            <router-link v-if="isAdmin" to="/job_list" class="block hover:bg-gray-700 p-2 rounded">Munkakörök</router-link>
             <button v-if="isAuthenticated" @click="logout" class="block hover:bg-gray-700 p-2 rounded">Kijelentkezés</button>
         </nav>
     </aside>

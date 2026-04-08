@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\UserRoleEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Tests\Integration\Database\EloquentPivotWithoutTimestampTest\UserRole;
+use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
 {
@@ -28,6 +31,7 @@ class RegisterRequest extends FormRequest
             'password' => 'required|min:8|confirmed',
             'name' => 'required|string',
             'birth_date' => 'required|date',
+            'role' => ['nullable', Rule::enum(UserRoleEnum::class)],
         ];
     }
 

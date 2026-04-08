@@ -22,6 +22,8 @@ class Employee extends Model
         'rights',
     ];
 
+    protected $appends = ['has_right_to_edit_company_data', 'has_right_to_create_job_offers', 'has_right_to_handle_applications'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -32,17 +34,17 @@ class Employee extends Model
         return $this->belongsTo(Company::class, 'company_id');
     }
 
-    public function hasRightToEditCompanyData(): bool
+    public function getHasRightToEditCompanyDataAttribute(): bool
     {
         return Arr::has($this->rights, EmployeeRoleEnum::EDIT_COMPANY_DATA->name);
     }
 
-    public function hasRightToCreateJobOffers(): bool
+    public function getHasRightToCreateJobOffersAttribute(): bool
     {
         return Arr::has($this->rights, EmployeeRoleEnum::CREATE_JOB_OFFER->name);
     }
 
-    public function hasRightToHandleApplications(): bool
+    public function getHasRightToHandleApplicationsAttribute(): bool
     {
         return Arr::has($this->rights, EmployeeRoleEnum::HANDLE_APPLICATIONS->name);
     }

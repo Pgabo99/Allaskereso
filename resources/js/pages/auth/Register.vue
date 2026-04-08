@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import axiosInstance from "../../../lib/axios";
 import {reactive, ref} from "vue";
-import {isAuthenticated, user} from '../../services/auth';
+import {isAdmin, isAuthenticated, user} from '../../services/auth';
 import router from "../../router";
 
 interface RegisterForm {
@@ -33,6 +33,7 @@ const maxDate = new Date(
 const errors = ref<Record<string, string[]>>({});
 const generalError = ref('');
 const success = ref(false);
+const showSuccess = ref(false);
 
 const register = async (payload: RegisterForm) => {
     success.value = false;
@@ -49,6 +50,7 @@ const register = async (payload: RegisterForm) => {
             } else {
                 user.value = response.data.user;
                 isAuthenticated.value = true;
+                isAdmin.value =  user.value.is_admin;
                 await router.push('/');
             }
         } else {

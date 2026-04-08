@@ -19,6 +19,7 @@ const rightsOptions = [
 const route = useRoute();
 const employees = ref<Employee[]>([]);
 const showForm = ref(false);
+const canEditCompany = ref(false);
 const showRegisterForm = ref(false);
 const generalError = ref('');
 const registerGeneralError = ref('');
@@ -65,7 +66,8 @@ const cancelRegister = () => {
 const fetchEmployees = async () => {
     try {
         const response = await axiosInstance.get(`company/${route.params.id}/employees`);
-        employees.value = response.data;
+        employees.value = response.data.employees;
+        canEditCompany.value = response.data.canEditCompany;
     } catch (e) {
         console.error(e);
     }
@@ -115,7 +117,7 @@ onMounted(fetchEmployees);
                 </router-link>
                 <h1 class="text-3xl text-slate-800">Alkalmazottak</h1>
             </div>
-            <div v-if="!showForm && !showRegisterForm" class="flex gap-2">
+            <div v-if="!showForm && !showRegisterForm && canEditCompany" class="flex gap-2">
                 <button @click="showForm = true"
                         class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
                     + Hozzáadás
@@ -127,7 +129,7 @@ onMounted(fetchEmployees);
             </div>
         </div>
 
-        <form v-if="showForm" class="mx-4 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800 mb-6"
+        <form v-if="showForm && canEditCompany" class="mx-4 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800 mb-6"
               @submit.prevent="submit">
 
             <div v-if="generalError" class="mb-5 p-3 bg-red-100 text-red-800 rounded text-sm">

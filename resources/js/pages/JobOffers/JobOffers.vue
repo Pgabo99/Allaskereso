@@ -118,7 +118,7 @@ onMounted(fetchJobOffers);
             </div>
         </form>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
             <JobCard
                 v-for="offer in filteredOffers"
                 :key="offer.id"

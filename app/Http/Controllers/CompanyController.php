@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\EmployeeRoleEnum;
 use App\Http\Requests\CompanyAddEmployeeRequest;
 use App\Http\Requests\CompanyCreateRequest;
 use App\Http\Requests\CompanyRegisterEmployeeRequest;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,12 +18,20 @@ class CompanyController extends Controller
 {
     public function index(): Collection
     {
-        return Company::all();
+        return Company::userCompanies()->get();
     }
 
-    public function employees(Company $company): Collection
+    public function canCreateJobOffers(Company $company): JsonResponse
     {
-        return Employee::where('company_id', $company->id)->with('user')->get();
+        return response()->json($company->can_create_job_offers);
+    }
+
+    public function employees(Company $company): JsonResponse
+    {
+        $return['employees'] = Employee::where('company_id', $company->id)->with('user')->get();
+        $return['canEditCompany'] = $company->can_edit_company;
+
+        return response()->json($return);
     }
 
     public function addEmployee(CompanyAddEmployeeRequest $request, Company $company): JsonResponse
@@ -92,6 +101,11 @@ class CompanyController extends Controller
         $data['created_by'] = Auth::id();
 
         $company = Company::create($data);
+        Employee::create([
+           'company_id' => $company->getKey(),
+            'user_id' => Auth::id(),
+            'rights' => array_column(EmployeeRoleEnum::cases(), 'value'),
+        ]);
 
         return response()->json(['success' => true, 'company' => $company], 201);
     }

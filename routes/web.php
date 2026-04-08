@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('company')->group(function () {
         Route::get('/', [CompanyController::class, 'index'])->name('company.index');
+        Route::get('/can_create_job_offers/{company}', [CompanyController::class, 'canCreateJobOffers'])->name('company.can_create_job_offers');
         Route::post('/', [CompanyController::class, 'store'])->name('company.store');
         Route::put('/{company}', [CompanyController::class, 'update'])->name('company.update');
         Route::delete('/{company}', [CompanyController::class, 'destroy'])->name('company.destroy');
@@ -44,6 +45,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [JobOfferController::class, 'index'])->name('job_offer.index');
         Route::get('/{jobOffer}', [JobOfferController::class, 'show'])->name('job_offer.show');
         Route::post('/', [JobOfferController::class, 'store'])->name('job_offer.store');
+        Route::put('/{jobOffer}', [JobOfferController::class, 'update'])->name('job_offer.update');
+        Route::delete('/{jobOffer}', [JobOfferController::class, 'destroy'])->name('job_offer.destroy');
     });
 });
 

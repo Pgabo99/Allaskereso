@@ -29,8 +29,6 @@ class UserController extends Controller
             $userParams['role'] = UserRoleEnum::USER;
         }
 
-        $userParams['role'] = $userParams['username'] === 'admin' ? UserRoleEnum::ADMIN : UserRoleEnum::USER;
-
         $user = User::create($userParams);
 
         if (!$isAdminRegister) {

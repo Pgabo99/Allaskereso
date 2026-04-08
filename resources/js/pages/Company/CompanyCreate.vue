@@ -8,6 +8,7 @@ interface Company {
     contact_email: string;
     location: string;
     tax_id: string;
+    can_edit_company: boolean
 }
 
 const companies = ref<Company[]>([]);
@@ -266,7 +267,7 @@ onMounted(fetchCompanies);
                                           d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87m6-4a4 4 0 11-8 0 4 4 0 018 0zm6-4a3 3 0 11-6 0 3 3 0 016 0zM3 8a3 3 0 116 0A3 3 0 013 8z"/>
                                 </svg>
                             </router-link>
-                            <router-link :to="`/job-offer/create?company_id=${company.id}`" title="Álláshirdetés"
+                            <router-link :to="`/job-offer/create?company_id=${company.id}`" title="Álláshirdetések"
                                          class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs rounded-full p-2 focus:outline-none inline-flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
                                      stroke="currentColor" stroke-width="2">
@@ -274,7 +275,7 @@ onMounted(fetchCompanies);
                                           d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                 </svg>
                             </router-link>
-                            <button @click="startEdit(company)" title="Szerkesztés"
+                            <button v-if="company.can_edit_company" @click="startEdit(company)" title="Szerkesztés"
                                     class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs rounded-full p-2 focus:outline-none inline-flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
                                      stroke="currentColor" stroke-width="2">

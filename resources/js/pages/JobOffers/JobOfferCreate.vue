@@ -2,6 +2,7 @@
 import {ref, onMounted} from 'vue';
 import {useRoute} from 'vue-router';
 import axiosInstance from '../../../lib/axios';
+import {isAdmin} from '../../services/auth';
 
 const route = useRoute();
 
@@ -36,6 +37,7 @@ const companies = ref<Company[]>([]);
 const jobs = ref<Job[]>([]);
 const jobOffers = ref<JobOffer[]>([]);
 const showForm = ref(false);
+const canCreateJobOffer = ref(false);
 const errors = ref<Record<string, string[]>>({});
 
 const companyId = route.query.company_id as string | undefined;
@@ -68,7 +70,8 @@ const cancel = () => {
 
 const fetchJobOffers = async () => {
     try {
-        const response = await axiosInstance.get('job-offer');
+        const params = companyId ? {company_id: companyId} : {};
+        const response = await axiosInstance.get('job-offer', {params});
         jobOffers.value = response.data;
     } catch (e) {
         console.error(e);
@@ -90,8 +93,16 @@ const submit = async () => {
 };
 
 onMounted(async () => {
+    if (isAdmin.value) {
+        canCreateJobOffer.value = true;
+    }
+
     if (companyId) {
         showForm.value = true;
+        if (!canCreateJobOffer.value) {
+            const canCreateJobOffersRes = await axiosInstance.get(`company/can_create_job_offers/${companyId}`);
+            canCreateJobOffer.value = canCreateJobOffersRes.data as boolean;
+        }
     }
     await fetchJobOffers();
     const [companiesRes, jobsRes] = await Promise.all([
@@ -105,26 +116,37 @@ onMounted(async () => {
 
 <template>
     <div class="max-w-5xl mx-auto">
+        <router-link v-if="companyId" :to="`/company/create`"
+                     class="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 px-4 pt-4">
+            ← Vissza
+        </router-link>
+
         <div class="flex items-center justify-between p-4">
             <h1 class="text-3xl text-slate-800">Álláshirdetések kezelése</h1>
-            <button v-if="!showForm" @click="showForm = true"
+            <button v-if="!showForm && canCreateJobOffer" @click="showForm = true"
                     class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
                 + Létrehozás
             </button>
         </div>
 
-        <form v-if="showForm" class="mx-4 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800 mb-6"
+        <form v-if="showForm && canCreateJobOffer" class="mx-4 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800 mb-6"
               @submit.prevent="submit">
 
             <div class="relative z-0 w-full mb-5 group">
                 <label for="form_company_id" class="sr-only">Cég</label>
-                <select id="form_company_id" v-model="form.company_id" required
+                <select id="form_company_id" v-model="form.company_id" required :disabled="!!companyId"
                         class="block py-2.5 ps-0 w-full text-sm text-body bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer">
                     <option value="" disabled>Cég kiválasztása</option>
-                    <option v-for="company in companies" :key="company.id" :value="company.id">{{
-                            company.name
-                        }}
-                    </option>
+                    <template v-if="companyId">
+                        <option :value="companies.find(c => c.id === companyId)?.id">
+                            {{ companies.find(c => c.id === companyId)?.name }}
+                        </option>
+                    </template>
+                    <template v-else>
+                        <option v-for="company in companies" :key="company.id" :value="company.id">
+                            {{ company.name }}
+                        </option>
+                    </template>
                 </select>
                 <p v-if="errors.company_id" class="text-red-500 text-xs mt-1">{{ errors.company_id[0] }}</p>
             </div>
@@ -237,7 +259,7 @@ onMounted(async () => {
                         }}
                     </td>
                     <td class="py-2">
-                        <router-link :to="`/job-offer/${offer.id}`"
+                        <router-link :to="`/job-offer/${offer.id}${companyId ? '?company_id=' + companyId : ''}`"
                                      class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-xs px-3 py-1.5 focus:outline-none whitespace-nowrap">
                             Részletek
                         </router-link>
