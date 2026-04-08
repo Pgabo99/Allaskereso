@@ -39,6 +39,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/{company}/employees', [CompanyController::class, 'employees'])->name('company.employees');
         Route::post('/{company}/employees', [CompanyController::class, 'addEmployee'])->name('company.employees.add');
         Route::post('/{company}/employees/register', [CompanyController::class, 'registerEmployee'])->name('company.employees.register');
+        Route::put('/{company}/employees/{employee}', [CompanyController::class, 'updateEmployee'])->name('company.employees.update');
+        Route::delete('/{company}/employees/{employee}', [CompanyController::class, 'removeEmployee'])->name('company.employees.remove');
     });
 
     Route::prefix('job-offer')->group(function () {

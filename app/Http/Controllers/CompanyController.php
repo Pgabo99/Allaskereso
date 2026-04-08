@@ -81,6 +81,25 @@ class CompanyController extends Controller
         return response()->json(['success' => true, 'employee' => $employee->load('user')], 201);
     }
 
+    public function updateEmployee(Company $company, Employee $employee): JsonResponse
+    {
+        $rights = request()->validate([
+            'rights' => 'array',
+            'rights.*' => 'string|in:CREATE_JOB_OFFER,HANDLE_APPLICATIONS,EDIT_COMPANY_DATA',
+        ])['rights'] ?? [];
+
+        $employee->update(['rights' => $rights]);
+
+        return response()->json(['success' => true, 'employee' => $employee->load('user')]);
+    }
+
+    public function removeEmployee(Company $company, Employee $employee): JsonResponse
+    {
+        $employee->delete();
+
+        return response()->json(['success' => true]);
+    }
+
     public function update(CompanyCreateRequest $request, Company $company): JsonResponse
     {
         $company->update($request->validated());

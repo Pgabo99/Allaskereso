@@ -106,6 +106,33 @@ const submitRegister = async () => {
     }
 };
 
+const editingEmployeeId = ref<string | null>(null);
+const editingRights = ref<string[]>([]);
+
+const startEditRights = (employee: Employee) => {
+    editingEmployeeId.value = employee.id;
+    editingRights.value = [...employee.rights];
+};
+
+const cancelEditRights = () => {
+    editingEmployeeId.value = null;
+    editingRights.value = [];
+};
+
+const saveRights = async (employeeId: string) => {
+    await axiosInstance.get('/sanctum/csrf-cookie');
+    await axiosInstance.put(`company/${route.params.id}/employees/${employeeId}`, {rights: editingRights.value});
+    cancelEditRights();
+    await fetchEmployees();
+};
+
+const removeEmployee = async (employeeId: string) => {
+    if (!confirm('Biztosan el szeretnéd távolítani ezt az alkalmazottat?')) return;
+    await axiosInstance.get('/sanctum/csrf-cookie');
+    await axiosInstance.delete(`company/${route.params.id}/employees/${employeeId}`);
+    await fetchEmployees();
+};
+
 onMounted(fetchEmployees);
 </script>
 
@@ -271,6 +298,7 @@ onMounted(fetchEmployees);
                     <th class="pb-2 font-semibold text-heading">Email</th>
                     <th class="pb-2 font-semibold text-heading">Felhasználónév</th>
                     <th class="pb-2 font-semibold text-heading">Jogosultságok</th>
+                    <th v-if="canEditCompany" class="pb-2"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -279,15 +307,47 @@ onMounted(fetchEmployees);
                     <td class="py-2 pr-4">{{ employee.user?.email ?? '—' }}</td>
                     <td class="py-2 pr-4">{{ employee.user?.username ?? '—' }}</td>
                     <td class="py-2">
-                            <span
-                                v-for="right in employee.rights" :key="right"
-                                class="inline-block mr-1 mb-1 px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-700"
-                            >{{ rightsOptions.find(o => o.value === right)?.label ?? right }}</span>
-                        <span v-if="!employee.rights?.length" class="text-gray-400">–</span>
+                        <div v-if="canEditCompany && editingEmployeeId === employee.id" class="flex flex-col gap-1">
+                            <label v-for="option in rightsOptions" :key="option.value"
+                                   class="flex items-center gap-2 text-sm text-heading cursor-pointer">
+                                <input type="checkbox" :value="option.value" v-model="editingRights"
+                                       class="w-4 h-4 text-gray-800 border-gray-300 rounded focus:ring-gray-700"/>
+                                {{ option.label }}
+                            </label>
+                            <div class="flex gap-2 mt-2">
+                                <button type="button" @click="saveRights(employee.id)"
+                                        class="text-white bg-gray-800 hover:bg-black hover:cursor-pointer rounded-full text-xs px-3 py-1 focus:outline-none">
+                                    Mentés
+                                </button>
+                                <button type="button" @click="cancelEditRights"
+                                        class="border border-gray-300 text-gray-700 hover:bg-gray-100 hover:cursor-pointer rounded-full text-xs px-3 py-1 focus:outline-none">
+                                    Mégse
+                                </button>
+                            </div>
+                        </div>
+                        <div v-else class="flex items-center gap-2 flex-wrap">
+                            <span v-for="right in employee.rights" :key="right"
+                                  class="inline-block px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-700">
+                                {{ rightsOptions.find(o => o.value === right)?.label ?? right }}
+                            </span>
+                            <span v-if="!employee.rights?.length" class="text-gray-400">–</span>
+                            <button v-if="canEditCompany" type="button" @click="startEditRights(employee)"
+                                    class="text-gray-400 hover:text-gray-700 hover:cursor-pointer focus:outline-none text-xs ml-1"
+                                    title="Jogosultságok szerkesztése">
+                                ✎
+                            </button>
+                        </div>
+                    </td>
+                    <td v-if="canEditCompany" class="py-2 text-right">
+                        <button @click="removeEmployee(employee.id)"
+                                class="text-gray-400 hover:text-red-600 hover:cursor-pointer focus:outline-none"
+                                title="Eltávolítás">
+                            ✕
+                        </button>
                     </td>
                 </tr>
                 <tr v-if="employees.length === 0">
-                    <td colspan="4" class="py-4 text-body text-center">Nincs még alkalmazott.</td>
+                    <td :colspan="canEditCompany ? 5 : 4" class="py-4 text-body text-center">Nincs még alkalmazott.</td>
                 </tr>
                 </tbody>
             </table>
