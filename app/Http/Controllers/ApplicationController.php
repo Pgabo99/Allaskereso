@@ -34,13 +34,14 @@ class ApplicationController extends Controller
         $data = $applications->map(function ($application) use ($users) {
             $user = $users->get($application->user_id);
             return [
-                'id'         => $application->id,
-                'status'     => $application->status,
-                'cv_url'     => Storage::url($application->cv),
-                'applicant'  => $user ? [
-                    'name'       => $user->name,
-                    'email'      => $user->email,
+                'id' => $application->id,
+                'status' => $application->status,
+                'cv_url' => Storage::url($application->cv),
+                'applicant' => $user ? [
+                    'name' => $user->name,
+                    'email' => $user->email,
                     'birth_date' => $user->birth_date,
+                    'id' => $user->getKey(),
                 ] : null,
             ];
         });
@@ -70,10 +71,10 @@ class ApplicationController extends Controller
         $path = $request->file('cv')->store('cvs', 'public');
 
         $application = Application::create([
-            'user_id'      => Auth::id(),
+            'user_id' => Auth::id(),
             'job_offer_id' => $request->validated('job_offer_id'),
-            'cv'           => $path,
-            'status'       => 'PENDING',
+            'cv' => $path,
+            'status' => 'PENDING',
         ]);
 
         return response()->json(['success' => true, 'application_id' => $application->id], 201);

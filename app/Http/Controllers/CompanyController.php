@@ -6,6 +6,7 @@ use App\EmployeeRoleEnum;
 use App\Http\Requests\CompanyAddEmployeeRequest;
 use App\Http\Requests\CompanyCreateRequest;
 use App\Http\Requests\CompanyRegisterEmployeeRequest;
+use App\UserRoleEnum;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Company;
@@ -71,6 +72,7 @@ class CompanyController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'birth_date' => $data['birth_date'],
+            'role' => UserRoleEnum::USER,
         ]);
 
         $employee = Employee::create([

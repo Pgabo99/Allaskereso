@@ -1,7 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import {authInitialized, isAuthenticated, loadUser} from './services/auth'
 
-import Dashboard from './pages/Dashboard.vue'
 import Register from "./pages/auth/Register.vue";
 import Login from "./pages/auth/Login.vue";
 import JobCreate from "./pages/Jobs/JobCreate.vue";
@@ -13,9 +12,10 @@ import JobOffers from "./pages/JobOffers/JobOffers.vue";
 import JobOfferDetail from "./pages/JobOffers/JobOfferDetail.vue";
 import Profile from "./pages/Profile/Profile.vue";
 import MyApplications from "./pages/Applications/MyApplications.vue";
+import AdminUsers from "./pages/Admin/Users.vue";
 
 const routes = [
-    {path: '/', component: Dashboard, meta: {requiresAuth: true}},
+    {path: '/', component: Login},
     {path: '/register', component: Register},
     {path: '/login', component: Login},
     {path: '/job_list', component: JobList, meta: {requiresAuth: true}},
@@ -26,6 +26,8 @@ const routes = [
     {path: '/company/:id/employees', component: CompanyEmployees, meta: {requiresAuth: true}},
     {path: '/profile', component: Profile, meta: {requiresAuth: true}},
     {path: '/my-applications', component: MyApplications, meta: {requiresAuth: true}},
+    {path: '/admin/users', component: AdminUsers, meta: {requiresAuth: true}},
+    {path: '/admin/users/:id', component: Profile, meta: {requiresAuth: true}},
 ]
 
 const router = createRouter({

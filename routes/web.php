@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\JobController;
@@ -15,6 +16,7 @@ Route::prefix('user')->group(function () {
     Route::middleware(['web', 'guest:sanctum'])->group(function () {
         Route::post('/register', [UserController::class, 'register'])->name('user.register');
         Route::post('/login', [UserController::class, 'login'])->name('user.login');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {
@@ -56,6 +58,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/', [JobOfferController::class, 'store'])->name('job_offer.store');
         Route::put('/{jobOffer}', [JobOfferController::class, 'update'])->name('job_offer.update');
         Route::delete('/{jobOffer}', [JobOfferController::class, 'destroy'])->name('job_offer.destroy');
+    });
+
+    Route::prefix('admin')->group(function () {
+        Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+        Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');
+        Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update');
     });
 });
 

@@ -105,4 +105,23 @@ class UserController extends Controller
             'success' => true
         ]);
     }
+
+    public function destroy(User $user): JsonResponse
+    {
+        $loggedInUser = Auth::user();
+        if ($loggedInUser->getKey() !== $user->getKey() && !$loggedInUser->isAdmin()) {
+            return response()->json(['message' => 'Nincs jogosultságod ehhez a művelethez.'], 403);
+        }
+
+        if ((string) $user->id === (string) Auth::user()->id) {
+            return response()->json(['message' => 'Nem törölheted saját magad.'], 403);
+        }
+
+        if ($loggedInUser->getKey() === $user->getKey()){
+            $this->logout(request());
+        }
+        $user->delete();
+
+        return response()->json(['success' => true]);
+    }
 }

@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import axiosInstance from '../../../lib/axios';
 import { user, loadUser, isAdmin } from '../../services/auth';
+
+const route = useRoute();
+const router = useRouter();
+
+const editUserId = route.params.id as string | undefined;
+const isEditingOther = computed(() => isAdmin.value && !!editUserId);
 
 const form = ref({
     name: '',
@@ -16,9 +23,23 @@ const form = ref({
 const errors = ref<Record<string, string[]>>({});
 const generalError = ref('');
 const success = ref(false);
+const showDeleteConfirm = ref(false);
+const deleteError = ref('');
 
-onMounted(() => {
-    if (user.value) {
+onMounted(async () => {
+    if (isEditingOther.value) {
+        try {
+            const res = await axiosInstance.get(`/admin/users/${editUserId}`);
+            const u = res.data.user;
+            form.value.name = u.name ?? '';
+            form.value.email = u.email ?? '';
+            form.value.username = u.username ?? '';
+            form.value.birth_date = u.birth_date ?? '';
+            form.value.role = u.role ?? 'USER';
+        } catch (e: any) {
+            generalError.value = e?.response?.data?.message || 'Hiba történt a felhasználó betöltésekor.';
+        }
+    } else if (user.value) {
         form.value.name = user.value.name ?? '';
         form.value.email = user.value.email ?? '';
         form.value.username = user.value.username ?? '';
@@ -34,11 +55,15 @@ const submit = async () => {
 
     try {
         await axiosInstance.get('/sanctum/csrf-cookie');
-        await axiosInstance.put('user/profile', form.value);
+        if (isEditingOther.value) {
+            await axiosInstance.put(`/admin/users/${editUserId}`, form.value);
+        } else {
+            await axiosInstance.put('user/profile', form.value);
+            await loadUser();
+        }
         success.value = true;
         form.value.password = '';
         form.value.password_confirmation = '';
-        await loadUser();
     } catch (e: any) {
         if (e.response?.status === 422) {
             errors.value = e.response.data.errors;
@@ -47,22 +72,46 @@ const submit = async () => {
         }
     }
 };
+
+const deleteUser = async () => {
+    deleteError.value = '';
+    try {
+        await axiosInstance.get('/sanctum/csrf-cookie');
+        await axiosInstance.delete(`/admin/users/${editUserId}`);
+        if (isAdmin && editUserId !== user.value.id) {
+            router.push('/admin/users');
+        } else {
+            router.push('/');
+        }
+    } catch (e: any) {
+        deleteError.value = e?.response?.data?.message || 'Hiba történt a törlés során.';
+        showDeleteConfirm.value = false;
+    }
+};
 </script>
 
 <template>
     <div class="max-w-2xl mx-auto">
-        <div class="flex items-center p-4">
-            <h1 class="text-3xl text-slate-800">Profilom</h1>
+        <div class="flex items-center p-4 gap-3">
+            <button v-if="isEditingOther" @click="router.push('/admin/users')"
+                    class="text-gray-500 hover:text-gray-800 text-sm hover:cursor-pointer">
+                ← Vissza
+            </button>
+            <h1 class="text-3xl text-slate-800">{{ isEditingOther ? 'Felhasználó szerkesztése' : 'Profilom' }}</h1>
         </div>
 
         <form class="mx-4 p-4 bg-white rounded-lg shadow-md mb-6" @submit.prevent="submit">
 
             <div v-if="success" class="mb-5 p-3 bg-green-100 text-green-800 rounded text-sm">
-                A profil sikeresen frissítve.
+                {{ isEditingOther ? 'A felhasználó adatai sikeresen frissítve.' : 'A profil sikeresen frissítve.' }}
             </div>
 
             <div v-if="generalError" class="mb-5 p-3 bg-red-100 text-red-800 rounded text-sm">
                 {{ generalError }}
+            </div>
+
+            <div v-if="deleteError" class="mb-5 p-3 bg-red-100 text-red-800 rounded text-sm">
+                {{ deleteError }}
             </div>
 
             <div class="relative z-0 w-full mb-5 group">
@@ -143,10 +192,33 @@ const submit = async () => {
                 </label>
             </div>
 
-            <button type="submit"
-                    class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
-                Mentés
-            </button>
+            <div class="flex items-center gap-3">
+                <button type="submit"
+                        class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
+                    Mentés
+                </button>
+                <button v-if="isEditingOther" type="button" @click="showDeleteConfirm = true"
+                        class="text-white bg-red-600 box-border border border-transparent hover:bg-red-700 hover:cursor-pointer focus:ring-4 focus:ring-red-300 shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
+                    Felhasználó törlése
+                </button>
+            </div>
         </form>
+
+        <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4">
+                <h2 class="text-lg font-semibold text-slate-800 mb-2">Felhasználó törlése</h2>
+                <p class="text-sm text-gray-600 mb-6">Biztosan törölni szeretnéd ezt a felhasználót? Ez a művelet nem visszavonható.</p>
+                <div class="flex gap-3 justify-end">
+                    <button @click="showDeleteConfirm = false"
+                            class="px-4 py-2 text-sm rounded-full border border-gray-300 hover:bg-gray-50 hover:cursor-pointer">
+                        Mégsem
+                    </button>
+                    <button @click="deleteUser"
+                            class="px-4 py-2 text-sm text-white bg-red-600 rounded-full hover:bg-red-700 hover:cursor-pointer">
+                        Törlés
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>

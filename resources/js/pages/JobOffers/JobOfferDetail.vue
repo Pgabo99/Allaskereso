@@ -2,6 +2,7 @@
 import {ref, computed, onMounted} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import axiosInstance from '../../../lib/axios';
+import {user} from '../../services/auth';
 
 interface JobOffer {
     id: string;
@@ -23,7 +24,7 @@ interface ApplicantRow {
     id: string;
     status: 'PENDING' | 'APPROVED' | 'DECLINED';
     cv_url: string;
-    applicant: { name: string; email: string; birth_date: string } | null;
+    applicant: { name: string; email: string; birth_date: string; id: string } | null;
 }
 
 interface Job {
@@ -33,9 +34,9 @@ interface Job {
 }
 
 const statusConfig: Record<string, { label: string; classes: string }> = {
-    PENDING:  { label: 'Folyamatban', classes: 'bg-yellow-100 text-yellow-800' },
-    APPROVED: { label: 'Elfogadva',   classes: 'bg-green-100 text-green-800' },
-    DECLINED: { label: 'Elutasítva',  classes: 'bg-red-100 text-red-800' },
+    PENDING: {label: 'Folyamatban', classes: 'bg-yellow-100 text-yellow-800'},
+    APPROVED: {label: 'Elfogadva', classes: 'bg-green-100 text-green-800'},
+    DECLINED: {label: 'Elutasítva', classes: 'bg-red-100 text-red-800'},
 };
 
 const workModeLabels: Record<string, string> = {
@@ -135,7 +136,7 @@ const onCvChange = (e: Event) => {
 const submitApply = async () => {
     applyErrors.value = {};
     if (!cvFile.value) {
-        applyErrors.value = { cv: ['Az önéletrajz feltöltése kötelező.'] };
+        applyErrors.value = {cv: ['Az önéletrajz feltöltése kötelező.']};
         return;
     }
     try {
@@ -144,7 +145,7 @@ const submitApply = async () => {
         formData.append('cv', cvFile.value);
         await axiosInstance.get('/sanctum/csrf-cookie');
         const res = await axiosInstance.post('application', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
+            headers: {'Content-Type': 'multipart/form-data'},
         });
         applySuccess.value = true;
         applying.value = false;
@@ -161,7 +162,7 @@ const submitApply = async () => {
 
 const updateApplicationStatus = async (row: ApplicantRow, status: 'APPROVED' | 'DECLINED') => {
     await axiosInstance.get('/sanctum/csrf-cookie');
-    const res = await axiosInstance.patch(`application/${row.id}/status`, { status });
+    const res = await axiosInstance.patch(`application/${row.id}/status`, {status});
     row.status = res.data.status;
 };
 
@@ -206,7 +207,9 @@ onMounted(async () => {
     <div :class="jobOffer?.can_handle_applications ? 'max-w-4xl' : 'max-w-2xl'" class="mx-auto p-6">
         <router-link :to="backLink"
                      class="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 mb-4">
-            ← {{ route.query.from === 'my-applications' ? 'Vissza a jelentkezéseimhez' : 'Vissza az álláshirdetésekhez' }}
+            ← {{
+                route.query.from === 'my-applications' ? 'Vissza a jelentkezéseimhez' : 'Vissza az álláshirdetésekhez'
+            }}
         </router-link>
 
         <div v-if="notFound" class="p-3 bg-red-100 text-red-800 rounded text-sm">
@@ -222,7 +225,8 @@ onMounted(async () => {
                     <input id="edit_title" v-model="form.title" type="text" placeholder=" " required
                            class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"/>
                     <label for="edit_title"
-                           class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Pozíció neve</label>
+                           class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Pozíció
+                        neve</label>
                     <p v-if="errors.title" class="text-red-500 text-xs mt-1">{{ errors.title[0] }}</p>
                 </div>
 
@@ -233,7 +237,9 @@ onMounted(async () => {
                         <option value="" disabled>Munkakör</option>
                         <template v-for="job in jobs" :key="job.id">
                             <option :value="job.id">{{ job.title }}</option>
-                            <option v-for="child in job.children" :key="child.id" :value="child.id">&nbsp;&nbsp;↳ {{ child.title }}</option>
+                            <option v-for="child in job.children" :key="child.id" :value="child.id">&nbsp;&nbsp;↳
+                                {{ child.title }}
+                            </option>
                         </template>
                     </select>
                     <p v-if="errors.job_id" class="text-red-500 text-xs mt-1">{{ errors.job_id[0] }}</p>
@@ -251,23 +257,30 @@ onMounted(async () => {
                     <label for="edit_work_mode" class="sr-only">Munkavégzés módja</label>
                     <select id="edit_work_mode" v-model="form.work_mode"
                             class="block py-2.5 ps-0 w-full text-sm text-body bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer">
-                        <option v-for="mode in workModes" :key="mode.value" :value="mode.value">{{ mode.label }}</option>
+                        <option v-for="mode in workModes" :key="mode.value" :value="mode.value">{{
+                                mode.label
+                            }}
+                        </option>
                     </select>
                 </div>
 
                 <div class="grid md:grid-cols-2 md:gap-6">
                     <div class="relative z-0 w-full mb-5 group">
-                        <input id="edit_salary_min" v-model="form.salary_min" type="number" min="0" step="10000" placeholder=" " required
+                        <input id="edit_salary_min" v-model="form.salary_min" type="number" min="0" step="10000"
+                               placeholder=" " required
                                class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"/>
                         <label for="edit_salary_min"
-                               class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Min. fizetés (Ft)</label>
+                               class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Min.
+                            fizetés (Ft)</label>
                         <p v-if="errors.salary_min" class="text-red-500 text-xs mt-1">{{ errors.salary_min[0] }}</p>
                     </div>
                     <div class="relative z-0 w-full mb-5 group">
-                        <input id="edit_salary_max" v-model="form.salary_max" type="number" min="0" step="10000" placeholder=" " required
+                        <input id="edit_salary_max" v-model="form.salary_max" type="number" min="0" step="10000"
+                               placeholder=" " required
                                class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"/>
                         <label for="edit_salary_max"
-                               class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Max. fizetés (Ft)</label>
+                               class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Max.
+                            fizetés (Ft)</label>
                         <p v-if="errors.salary_max" class="text-red-500 text-xs mt-1">{{ errors.salary_max[0] }}</p>
                     </div>
                 </div>
@@ -350,7 +363,8 @@ onMounted(async () => {
                 <form v-if="applying" class="mt-6 border-t border-default pt-6" @submit.prevent="submitApply">
                     <h2 class="text-lg font-semibold text-heading mb-4">Jelentkezés</h2>
                     <div class="relative z-0 w-full mb-5 group">
-                        <label for="cv_file" class="block text-sm text-body mb-1">Önéletrajz (PDF, DOC, DOCX – max. 5 MB)</label>
+                        <label for="cv_file" class="block text-sm text-body mb-1">Önéletrajz (PDF, DOC, DOCX – max. 5
+                            MB)</label>
                         <input id="cv_file" type="file" accept=".pdf,.doc,.docx" @change="onCvChange"
                                class="block w-full text-sm text-body border border-default-medium rounded-lg cursor-pointer focus:outline-none"/>
                         <p v-if="applyErrors.cv" class="text-red-500 text-xs mt-1">{{ applyErrors.cv[0] }}</p>
@@ -369,12 +383,13 @@ onMounted(async () => {
             </div>
 
             <!-- Applicants table -->
-            <div v-if="jobOffer.can_handle_applications" class="mt-6 bg-white border border-default rounded-lg shadow-xs p-6">
-            <h2 class="text-xl font-semibold text-heading mb-4">Jelentkezők</h2>
-            <p v-if="applicants.length === 0" class="text-body text-sm">Még nincs jelentkező.</p>
-            <div v-else class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-body">
-                    <thead class="text-xs text-gray-500 uppercase border-b border-default">
+            <div v-if="jobOffer.can_handle_applications"
+                 class="mt-6 bg-white border border-default rounded-lg shadow-xs p-6">
+                <h2 class="text-xl font-semibold text-heading mb-4">Jelentkezők</h2>
+                <p v-if="applicants.length === 0" class="text-body text-sm">Még nincs jelentkező.</p>
+                <div v-else class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-body">
+                        <thead class="text-xs text-gray-500 uppercase border-b border-default">
                         <tr>
                             <th class="py-3 pr-4">Név</th>
                             <th class="py-3 pr-4">Email</th>
@@ -383,8 +398,8 @@ onMounted(async () => {
                             <th class="py-3 pr-4">Státusz</th>
                             <th class="py-3">Műveletek</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         <tr v-for="row in applicants" :key="row.id" class="border-b border-default last:border-0">
                             <td class="py-3 pr-4 font-medium text-heading">{{ row.applicant?.name ?? '–' }}</td>
                             <td class="py-3 pr-4">{{ row.applicant?.email ?? '–' }}</td>
@@ -404,7 +419,7 @@ onMounted(async () => {
                                 </span>
                             </td>
                             <td class="py-3">
-                                <div v-if="row.status === 'PENDING'" class="flex gap-2">
+                                <div v-if="row.status === 'PENDING' && row.applicant?.id !== user" class="flex gap-2">
                                     <button @click="updateApplicationStatus(row, 'APPROVED')"
                                             class="text-white bg-green-600 hover:bg-green-700 hover:cursor-pointer focus:ring-4 focus:ring-green-300 font-medium rounded-full text-xs px-3 py-1.5 focus:outline-none">
                                         Elfogadás
@@ -417,10 +432,10 @@ onMounted(async () => {
                                 <span v-else class="text-xs text-gray-400">–</span>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
         </div>
 
         <div v-else class="text-body">Betöltés...</div>
