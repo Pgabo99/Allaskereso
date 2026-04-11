@@ -16,13 +16,13 @@ Route::prefix('user')->group(function () {
     Route::middleware(['web', 'guest:sanctum'])->group(function () {
         Route::post('/register', [UserController::class, 'register'])->name('user.register');
         Route::post('/login', [UserController::class, 'login'])->name('user.login');
-        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/get-logged-in-user', [UserController::class, 'getLoggedInUser'])->name('user.get_logged_in_user');
         Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.update_profile');
         Route::post('/logout', [UserController::class, 'logout'])->name('user.logout');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('user.destroy');
     });
 });
 

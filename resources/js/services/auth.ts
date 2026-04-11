@@ -1,5 +1,6 @@
 import axiosInstance from "../../lib/axios";
 import { ref } from 'vue';
+import router from "../router";
 
 axiosInstance.defaults.withCredentials = true;
 
@@ -36,4 +37,5 @@ export const logout = async () => {
     user.value = null;
     isAuthenticated.value = false;
     isAdmin.value = false;
+    await router.push('/');
 };

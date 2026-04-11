@@ -113,10 +113,6 @@ class UserController extends Controller
             return response()->json(['message' => 'Nincs jogosultságod ehhez a művelethez.'], 403);
         }
 
-        if ((string) $user->id === (string) Auth::user()->id) {
-            return response()->json(['message' => 'Nem törölheted saját magad.'], 403);
-        }
-
         if ($loggedInUser->getKey() === $user->getKey()){
             $this->logout(request());
         }

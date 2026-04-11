@@ -76,12 +76,17 @@ const submit = async () => {
 const deleteUser = async () => {
     deleteError.value = '';
     try {
+        let deleteUserId = editUserId;
+        if (!deleteUserId) {
+            deleteUserId = user.value.id;
+        }
         await axiosInstance.get('/sanctum/csrf-cookie');
-        await axiosInstance.delete(`/admin/users/${editUserId}`);
-        if (isAdmin && editUserId !== user.value.id) {
+        await axiosInstance.delete(`/user/${deleteUserId}`);
+        if (isAdmin.value && editUserId && editUserId !== user.value?.id) {
             router.push('/admin/users');
         } else {
-            router.push('/');
+            await loadUser();
+            router.push('/login');
         }
     } catch (e: any) {
         deleteError.value = e?.response?.data?.message || 'Hiba történt a törlés során.';
@@ -197,9 +202,9 @@ const deleteUser = async () => {
                         class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
                     Mentés
                 </button>
-                <button v-if="isEditingOther" type="button" @click="showDeleteConfirm = true"
+                <button type="button" @click="showDeleteConfirm = true"
                         class="text-white bg-red-600 box-border border border-transparent hover:bg-red-700 hover:cursor-pointer focus:ring-4 focus:ring-red-300 shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">
-                    Felhasználó törlése
+                    {{ isEditingOther ? 'Felhasználó törlése' : 'Profilom törlése' }}
                 </button>
             </div>
         </form>

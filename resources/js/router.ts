@@ -3,7 +3,6 @@ import {authInitialized, isAuthenticated, loadUser} from './services/auth'
 
 import Register from "./pages/auth/Register.vue";
 import Login from "./pages/auth/Login.vue";
-import JobCreate from "./pages/Jobs/JobCreate.vue";
 import JobList from "./pages/Jobs/JobList.vue";
 import JobOfferCreate from "./pages/JobOffers/JobOfferCreate.vue";
 import CompanyCreate from "./pages/Company/CompanyCreate.vue";
@@ -44,8 +43,12 @@ router.beforeEach(async (to) => {
         return {path: '/login'};
     }
 
-    if ((to.path === '/login' || to.path === '/register') && isAuthenticated.value) {
-        return {path: '/'};
+    if ((to.path === '/' || to.path === '/login' || to.path === '/register') && isAuthenticated.value) {
+        return {path: '/job-offers'};
+    }
+
+    if (!to.matched.length) {
+        return isAuthenticated.value ? {path: '/job-offers'} : {path: '/login'};
     }
 });
 
