@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import {authInitialized, isAuthenticated, loadUser} from './services/auth'
+import {authInitialized, isAdmin, isAuthenticated, loadUser} from './services/auth'
 
 import Register from "./pages/auth/Register.vue";
 import Login from "./pages/auth/Login.vue";
@@ -17,7 +17,7 @@ const routes = [
     {path: '/', component: Login},
     {path: '/register', component: Register},
     {path: '/login', component: Login},
-    {path: '/job_list', component: JobList, meta: {requiresAuth: true}},
+    {path: '/job_list', component: JobList, meta: {requiresAuth: true, requiresAdmin: true}},
     {path: '/job-offers', component: JobOffers, meta: {requiresAuth: true}},
     {path: '/job-offer/create', component: JobOfferCreate, meta: {requiresAuth: true}},
     {path: '/job-offer/:id', component: JobOfferDetail, meta: {requiresAuth: true}},
@@ -25,8 +25,8 @@ const routes = [
     {path: '/company/:id/employees', component: CompanyEmployees, meta: {requiresAuth: true}},
     {path: '/profile', component: Profile, meta: {requiresAuth: true}},
     {path: '/my-applications', component: MyApplications, meta: {requiresAuth: true}},
-    {path: '/admin/users', component: AdminUsers, meta: {requiresAuth: true}},
-    {path: '/admin/users/:id', component: Profile, meta: {requiresAuth: true}},
+    {path: '/admin/users', component: AdminUsers, meta: {requiresAuth: true, requiresAdmin: true}},
+    {path: '/admin/users/:id', component: Profile, meta: {requiresAuth: true, requiresAdmin: true}},
 ]
 
 const router = createRouter({
@@ -41,6 +41,10 @@ router.beforeEach(async (to) => {
 
     if (to.meta.requiresAuth && !isAuthenticated.value) {
         return {path: '/login'};
+    }
+
+    if (to.meta.requiresAdmin && !isAdmin.value) {
+        return {path: '/job-offers'};
     }
 
     if ((to.path === '/' || to.path === '/login' || to.path === '/register') && isAuthenticated.value) {

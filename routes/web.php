@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('job')->group(function () {
         Route::post('/create', [JobController::class, 'create'])->name('job.create');
         Route::get('/list', [JobController::class, 'index'])->name('job.list');
+        Route::put('/{job}', [JobController::class, 'update'])->name('job.update');
         Route::delete('/{job}', [JobController::class, 'destroy'])->name('job.destroy');
     });
 

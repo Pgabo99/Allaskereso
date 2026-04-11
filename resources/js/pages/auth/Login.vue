@@ -29,7 +29,7 @@ const login = async (payload: LoginForm) => {
             user.value = response.data.user;
             isAuthenticated.value = true;
             isAdmin.value = user.value.is_admin;
-            await router.push('/');
+            await router.push('/job-offers');
         } else {
             generalError.value = response.data.message || 'Hiba történt';
         }

@@ -21,7 +21,7 @@ const statusConfig: Record<string, { label: string; classes: string }> = {
 </script>
 
 <template>
-    <div class="bg-neutral-primary-soft flex flex-col p-6 border border-default rounded-base shadow-xs rounded-lg min-w-min">
+    <div class="bg-neutral-primary-soft flex flex-col p-6 border border-default rounded-base shadow-xs rounded-lg min-w-0">
         <div class="flex items-start justify-between mb-3 gap-2">
             <h5 class="text-2xl font-semibold tracking-tight text-heading leading-8 truncate">{{ title }}</h5>
             <span

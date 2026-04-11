@@ -12,8 +12,11 @@ interface Job {
 
 const jobs = ref<Job[]>([]);
 const expanded = ref<string[]>([]);
+const editingId = ref<string | null>(null);
+const editTitle = ref('');
 
 const toggle = (id: string) => {
+    if (editingId.value === id) return;
     const idx = expanded.value.indexOf(id);
     if (idx === -1) {
         expanded.value.push(id);
@@ -35,6 +38,26 @@ const deleteJob = async (id: string) => {
     try {
         await axiosInstance.delete(`job/${id}`);
         await fetchJobs();
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+const startEdit = (job: Job) => {
+    editingId.value = job.id;
+    editTitle.value = job.title;
+};
+
+const cancelEdit = () => {
+    editingId.value = null;
+    editTitle.value = '';
+};
+
+const saveEdit = async (id: string) => {
+    try {
+        await axiosInstance.put(`job/${id}`, {title: editTitle.value});
+        await fetchJobs();
+        cancelEdit();
     } catch (e) {
         console.error(e);
     }
@@ -67,7 +90,25 @@ onMounted(() => {
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 <span v-else class="w-4 shrink-0"></span>
-                                {{ job.title }}
+                                <template v-if="editingId === job.id">
+                                    <input
+                                        v-model="editTitle"
+                                        @click.stop
+                                        @keyup.enter="saveEdit(job.id)"
+                                        @keyup.escape="cancelEdit"
+                                        class="border rounded px-1 py-0.5 text-sm w-full"
+                                        autofocus
+                                    />
+                                    <button @click.stop="saveEdit(job.id)" class="text-green-600 hover:text-green-800 font-bold ml-1">✓</button>
+                                    <button @click.stop="cancelEdit" class="text-gray-400 hover:text-gray-600 font-bold ml-1">✕</button>
+                                </template>
+                                <template v-else>
+                                    <span class="flex-1">{{ job.title }}</span>
+                                    <button
+                                        @click.stop="startEdit(job)"
+                                        class="text-blue-400 hover:text-blue-600 text-xs ml-2"
+                                    >✎</button>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -79,12 +120,30 @@ onMounted(() => {
                         >
                             <div class="table-cell py-1 pl-10 text-gray-600">
                                 <div class="flex items-center justify-between">
-                                    <span>↳ {{ child.title }}</span>
-                                    <button
-                                        @click.stop="deleteJob(child.id)"
-                                        class="ml-4 text-red-500 hover:text-red-700 font-bold"
-                                    >✕
-                                    </button>
+                                    <template v-if="editingId === child.id">
+                                        <input
+                                            v-model="editTitle"
+                                            @keyup.enter="saveEdit(child.id)"
+                                            @keyup.escape="cancelEdit"
+                                            class="border rounded px-1 py-0.5 text-sm flex-1"
+                                            autofocus
+                                        />
+                                        <button @click.stop="saveEdit(child.id)" class="text-green-600 hover:text-green-800 font-bold ml-1">✓</button>
+                                        <button @click.stop="cancelEdit" class="text-gray-400 hover:text-gray-600 font-bold ml-1">✕</button>
+                                    </template>
+                                    <template v-else>
+                                        <span>↳ {{ child.title }}</span>
+                                        <div class="flex items-center gap-2 ml-4">
+                                            <button
+                                                @click.stop="startEdit(child)"
+                                                class="text-blue-400 hover:text-blue-600 text-xs"
+                                            >✎</button>
+                                            <button
+                                                @click.stop="deleteJob(child.id)"
+                                                class="text-red-500 hover:text-red-700 font-bold"
+                                            >✕</button>
+                                        </div>
+                                    </template>
                                 </div>
                             </div>
                         </div>
