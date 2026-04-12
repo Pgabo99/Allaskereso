@@ -15,7 +15,7 @@ class ApplicationSeeder extends Seeder
         $users = User::pluck('id');
         $status = collect(['PENDING', 'APPROVED', 'DECLINED']);
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 150; $i++) {
             Application::updateOrCreate(
                 ['user_id' => $users->random(), 'job_offer_id' => $jobOffers->random()],
                 [

@@ -35,6 +35,16 @@ class CompanySeeder extends Seeder
             ['_id' => '69d3e44be0efd855180d0f15', 'name' => 'QuantumSoft Kft.', 'contact_email' => 'office@quantumsoft.hu', 'location' => '8200 Veszprém, Kossuth utca 33.', 'tax_id' => '35678901-2-19', 'created_by' => '6a000001e0efd855180d0013'],
             ['_id' => '69d3e458e0efd855180d0f16', 'name' => 'LogicLane Kft.', 'contact_email' => 'contact@logiclane.hu', 'location' => '5600 Békéscsaba, Andrássy út 44.', 'tax_id' => '36789012-2-04', 'created_by' => '6a000001e0efd855180d0013'],
             ['_id' => '69d3e466e0efd855180d0f17', 'name' => 'DevHive Kft.', 'contact_email' => 'info@devhive.hu', 'location' => '6726 Szeged, Fő fasor 12.', 'tax_id' => '37890123-2-06', 'created_by' => '6a000001e0efd855180d0013'],
+            ['_id' => '69d3e480e0efd855180d0f18', 'name' => 'TechSphere Kft.', 'contact_email' => 'info@techsphere.hu', 'location' => '3300 Eger, Kossuth Lajos utca 12.', 'tax_id' => '38012345-2-10', 'created_by' => '6a000001e0efd855180d0013'],
+            ['_id' => '69d3e495e0efd855180d0f19', 'name' => 'InnoVibe Kft.', 'contact_email' => 'hello@innovibe.hu', 'location' => '7100 Szekszárd, Béla király tér 5.', 'tax_id' => '39123456-2-17', 'created_by' => '6a000001e0efd855180d0013'],
+            ['_id' => '69d3e4a8e0efd855180d0f1a', 'name' => 'DigiCore Kft.', 'contact_email' => 'office@digicore.hu', 'location' => '2500 Esztergom, Simor János utca 20.', 'tax_id' => '40234567-2-11', 'created_by' => '6a000001e0efd855180d0013'],
+            ['_id' => '69d3e4bbe0efd855180d0f1b', 'name' => 'ProLogic Kft.', 'contact_email' => 'contact@prologic.hu', 'location' => '2800 Tatabánya, Fő tér 3.', 'tax_id' => '41345678-2-11', 'created_by' => '6a000001e0efd855180d0013'],
+            ['_id' => '69d3e4cee0efd855180d0f1c', 'name' => 'SoftNest Kft.', 'contact_email' => 'info@softnest.hu', 'location' => '8900 Zalaegerszeg, Ady Endre utca 7.', 'tax_id' => '42456789-2-20', 'created_by' => '6a000001e0efd855180d0013'],
+            ['_id' => '69d3e4e1e0efd855180d0f1d', 'name' => 'MindBridge Kft.', 'contact_email' => 'iroda@mindbridge.hu', 'location' => '9400 Sopron, Előkapu 11.', 'tax_id' => '43567890-2-08', 'created_by' => '6a000001e0efd855180d0013'],
+            ['_id' => '69d3e4f4e0efd855180d0f1e', 'name' => 'CodeCraft Kft.', 'contact_email' => 'support@codecraft.hu', 'location' => '3529 Miskolc, Derkovits utca 5.', 'tax_id' => '44678901-2-05', 'created_by' => '6a000001e0efd855180d0013'],
+            ['_id' => '69d3e507e0efd855180d0f1f', 'name' => 'PrimeData Kft.', 'contact_email' => 'info@primedata.hu', 'location' => '3301 Eger, Telekessy utca 9.', 'tax_id' => '45789012-2-10', 'created_by' => '6a000001e0efd855180d0013'],
+            ['_id' => '69d3e51ae0efd855180d0f20', 'name' => 'TurboSystems Kft.', 'contact_email' => 'hello@turbosystems.hu', 'location' => '7622 Pécs, Alkotmány utca 15.', 'tax_id' => '46890123-2-02', 'created_by' => '6a000001e0efd855180d0013'],
+            ['_id' => '69d3e52de0efd855180d0f21', 'name' => 'HorizonTech Kft.', 'contact_email' => 'info@horizontech.hu', 'location' => '1051 Budapest, Vörösmarty tér 2.', 'tax_id' => '47901234-2-41', 'created_by' => '6a000001e0efd855180d0013'],
         ];
 
         foreach ($companies as $company) {
