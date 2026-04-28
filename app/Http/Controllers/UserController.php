@@ -79,6 +79,10 @@ class UserController extends Controller
 
         if (!$user->isAdmin()) {
             unset($data['role']);
+        } else {
+            if (!User::where('role', UserRoleEnum::ADMIN)->count() <= 1) {
+                $data['role'] = UserRoleEnum::ADMIN;
+            }
         }
 
         if (empty($data['password'])) {
@@ -113,9 +117,18 @@ class UserController extends Controller
             return response()->json(['message' => 'Nincs jogosultságod ehhez a művelethez.'], 403);
         }
 
+        if ($loggedInUser->getKey() === $user->getKey() && $user->isAdmin()) {
+            return response()->json(['message' => 'Ne töröld magadat PLS!'], 403);
+        }
+
+        if (!User::where('role', UserRoleEnum::ADMIN)->count() <= 1) {
+            return response()->json(['message' => 'Te vagy az utolsó lehetőségünk!'], 403);
+        }
+
         if ($loggedInUser->getKey() === $user->getKey()){
             $this->logout(request());
         }
+
         $user->delete();
 
         return response()->json(['success' => true]);
