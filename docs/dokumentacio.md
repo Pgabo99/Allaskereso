@@ -30,7 +30,7 @@ A projekt MongoDB Atlas felhőalapú, NoSQL dokumentum-alapú adatbázist haszn�
 ### 2.2 Laravel 12 (backend)
 
 **Indoklás:**
-- PHP ökoszisztéma, erős közösség és dokumentáció
+- A munkám során Laravelt használok, ezért ezt a technológiát ismerem a legjobban
 - Beépített Eloquent ORM, ami a MongoDB driverrel is kompatibilis
 - Laravel Sanctum a session-alapú autentikációhoz — egyszerű, biztonságos megoldás SPA-hoz
 - Form Request osztályok a validációhoz, MVC architektúra a kód szervezettségéhez
@@ -39,6 +39,8 @@ A projekt MongoDB Atlas felhőalapú, NoSQL dokumentum-alapú adatbázist haszn�
 ### 2.3 Vue 3 + TypeScript (frontend)
 
 **Indoklás:**
+- Vue 3-at szeretnék bevezetni a munkahelyemen, ezért ezt a projektet arra használtam, hogy megismerkedjem a keretrendszerrel
+- Claude Code AI-asszisztenst szintén munkahelyi bevezetés céljából próbáltam ki ennél a projektnél
 - Composition API és `<script setup>` szintaxis: tömör, olvasható komponensek
 - TypeScript: típusbiztonság, jobb IDE-támogatás, kevesebb futásidejű hiba
 - Vue Router: SPA-routing, a Laravel wildcard route-ja kiszolgálja az összes frontend útvonalat
