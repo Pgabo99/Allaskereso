@@ -11,7 +11,7 @@
 Az **Álláskereső** egy webalapú álláshirdetési és -keresési platform, amelyen keresztül a felhasználók böngészhetnek a meghirdetett állásokra, jelentkezhetnek azokra, illetve a cégek közzétehetnek hirdetéseket és kezelhetik a beérkező pályázatokat.
 
 Az alkalmazás három szerepkört különböztet meg:
-- **Vendég** – csak megtekinthet nyilvános tartalmakat
+- **Vendég** – Csak bejelentkezni, regisztrálni tud
 - **Felhasználó (USER)** – böngészhet, jelentkezhet állásokra, kezelhet céget
 - **Adminisztrátor (ADMIN)** – teljes hozzáféréssel rendelkezik minden adathoz
 
