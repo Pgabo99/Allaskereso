@@ -26,7 +26,7 @@ A projekt fejlesztése során két AI-eszközt használtam: ChatGPT-t a fejleszt
 
 ## 3. ChatGPT
 
-### 3.1 Beváló promptok
+### 3.1 Bevált promptok
 
 #### Adatgenerálás – munkakör-kategóriák
 
@@ -66,7 +66,7 @@ A projekt fejlesztése során két AI-eszközt használtam: ChatGPT-t a fejleszt
 
 ---
 
-### 3.2 Nem beváló promptok
+### 3.2 Nem bevált promptok
 
 #### Bejelentkezési állapot elvesztése oldal újratöltéskor
 
@@ -98,7 +98,11 @@ A projekt fejlesztése során két AI-eszközt használtam: ChatGPT-t a fejleszt
 
 ## 4. Claude Code
 
-### 4.1 Beváló promptok
+> **Megjegyzés:** A Claude Code PhpStorm plugin-on keresztül futott, amely közvetlenül a kódszerkesztőbe épül be és nem készít exportálható chat-logot.  Emiatt az eredeti beszélgetések nem tölthetők fel.
+
+
+
+### 4.1 Bevált promptok
 
 #### Konkrét, kontextusos feladatleírás
 
