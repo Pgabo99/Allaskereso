@@ -73,8 +73,8 @@ Az alkalmazás elérhető: **http://localhost:8000**
 
 | Szerepkör | E-mail | Jelszó |
 |---|---|---|
-| Admin | admin@admin.com | password |
-| Felhasználó | kiss.adam@example.com | password |
+| Admin | admin@admin.com | almafa123 |
+| Felhasználó | kiss.adam@example.com | Adam123! |
 
 ---
 
