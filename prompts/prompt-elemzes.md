@@ -2,13 +2,13 @@
 
 **Projekt:** Álláskereső webalkalmazás  
 **Készítette:** Poprádi Gabriella  
-**AI eszköz:** Claude Code (Anthropic)
+**AI eszközök:** ChatGPT (OpenAI), Claude Code (Anthropic)
 
 ---
 
 ## 1. Az AI használatáról
 
-A projekt fejlesztése során Claude Code AI-asszisztenst használtam. Az AI segítséget nyújtott a kód generálásában, hibakeresésben és a dokumentáció elkészítésében. A szoftveres dokumentációt szintén az AI segítségével készítettem el, amelyet ezt követően átnéztem és javítottam.
+A projekt fejlesztése során két AI-eszközt használtam: ChatGPT-t a fejlesztés korábbi fázisában, majd Claude Code-ot (PhpStorm plugin-on keresztül) a fejlesztés nagy részében. Az AI segítséget nyújtott a kód generálásában, hibakeresésben és a dokumentáció elkészítésében. A szoftveres dokumentációt szintén az AI segítségével készítettem el, amelyet ezt követően átnéztem és javítottam.
 
 ---
 
@@ -24,41 +24,11 @@ A projekt fejlesztése során Claude Code AI-asszisztenst használtam. Az AI seg
 
 ---
 
-## 3. Jól működő promptok
+## 3. ChatGPT
 
-### 3.1 Konkrét, kontextusos feladatleírás
-**Prompt:**
-> „Jelentkezések megoszlása státusz szerint, lehessen rendezni az álláshirdetéseket legújabb, vagy aszerint, hogy hányan jelentkeztek"
+### 3.1 Beváló promptok
 
-**Miért működött jól:**
-- Egyértelmű, konkrét feladatot fogalmazott meg
-- Két különálló funkciót kért egyszerre, amelyek logikailag összetartoznak
-- Az AI felolvasta az érintett fájlokat, megértette a kontextust, és egyszerre módosította a backendet és a frontendet
-
----
-
-### 3.2 Iteratív finomítás
-**Prompt:**
-> „Ha rákattintanak a Folyamatban, Elfogadva, vagy az Elutasítva gombra, akkor szűrje le a listát, és ha újra kattintanak, törölje a szűrőt"
-
-**Miért működött jól:**
-- Az előző eredményre épített (az összesítők már meg voltak)
-- Pontosan leírta az elvárt viselkedést (toggle logika)
-- Az AI azonnal értette, hogy az előző kártyákat kell interaktívvá tenni
-
----
-
-### 3.3 Ugyanazon funkció más oldalra való alkalmazása
-**Prompt:**
-> „Csináld meg ugyanezt a szűrőt a job-offer/{id} oldalon is"
-
-**Miért működött jól:**
-- Egyértelmű referencia az előző implementációra
-- Az AI felolvasta a célfájlt, azonosította a releváns szekciót, és következetesen alkalmazta a mintát
-
----
-
-### 3.4 Adatgenerálás – munkakör-kategóriák
+#### Adatgenerálás – munkakör-kategóriák
 
 **Prompt:**
 > "List job categories in a hierarchical format (main category → subcategories). Include at least: IT, Engineering, Business, Healthcare. Use Hungarian job title names."
@@ -70,7 +40,7 @@ A projekt fejlesztése során Claude Code AI-asszisztenst használtam. Az AI seg
 
 ---
 
-### 3.5 Adatgenerálás – cégek
+#### Adatgenerálás – cégek
 
 **Prompt:**
 > "Generate 15–20 realistic fake Hungarian companies. For each provide: company name (ending in Kft. or Zrt.), contact email, Hungarian address (city + street), tax ID in Hungarian format (XXXXXXXX-X-XX). Output as a numbered list."
@@ -81,7 +51,7 @@ A projekt fejlesztése során Claude Code AI-asszisztenst használtam. Az AI seg
 
 ---
 
-### 3.6 CORS hiba megoldása – iteratív promptok
+#### CORS hiba megoldása – iteratív promptok
 
 **1. prompt:**
 > "I'm calling `/api/user/register` from Vue 3 using Axios and getting a CORS error. The backend is Laravel 12. What are the possible causes and how do I fix them?"
@@ -96,31 +66,9 @@ A projekt fejlesztése során Claude Code AI-asszisztenst használtam. Az AI seg
 
 ---
 
-## 4. Kevésbé jól működő promptok
+### 3.2 Nem beváló promptok
 
-### 4.1 Túl általános kérdés konkrét elvárás nélkül
-**Prompt:**
-> „Milyen összesítést tudnék végezni?"
-
-**Miért volt kevésbé hatékony:**
-- Az AI felsorolt több lehetőséget, de nem implementált semmit
-- Egy döntési lépést igényelt a fejlesztőtől, mielőtt a tényleges munka elkezdődhetett
-- **Tanulság:** Jobb lett volna egyből a konkrét összesítést megnevezni
-
----
-
-### 4.2 Elvont követelményellenőrzés
-**Prompt:**
-> „Teljesít minden követelményt?" (követelménylistával)
-
-**Miért volt részben korlátozott:**
-- Az AI nem tudta ellenőrizni a vizuális E-K diagramot (az nem kódban van)
-- A `.env` fájl tartalmát sem olvasta el automatikusan, ezért a MongoDB-használatot feltételezni kellett
-- **Tanulság:** A nem kódalapú artefaktumokra vonatkozó kérdések manuális ellenőrzést igényelnek
-
----
-
-### 4.3 Bejelentkezési állapot elvesztése oldal újratöltéskor
+#### Bejelentkezési állapot elvesztése oldal újratöltéskor
 
 **Prompt:**
 > "After a page reload, the authenticated user gets logged out. I'm using Laravel Sanctum for SPA authentication. Here are the relevant files: `auth.ts`, `axios.ts`, `UserController.php`, and my routes. What could cause the session to not persist?"
@@ -133,9 +81,9 @@ A projekt fejlesztése során Claude Code AI-asszisztenst használtam. Az AI seg
 
 ---
 
-## 5. Közepes hatékonyságú promptok
+### 3.3 Közepes hatékonyságú promptok
 
-### 5.1 Komplex UI-feladat kódrészlettel
+#### Munkakörök listázása
 
 **Prompt:**
 > "I need a `JobList.vue` page that shows existing job categories in a table and allows adding new ones above it. `JobCreate.vue` already exists. Here is the current HTML structure I have: `[code]`. Please complete the table so it fetches and displays the data dynamically using a `for` loop."
@@ -148,7 +96,46 @@ A projekt fejlesztése során Claude Code AI-asszisztenst használtam. Az AI seg
 
 ---
 
-### 3.7 Iteratív komponensfejlesztés – JobOffers oldal
+## 4. Claude Code
+
+### 4.1 Beváló promptok
+
+#### Konkrét, kontextusos feladatleírás
+
+**Prompt:**
+> „Jelentkezések megoszlása státusz szerint, lehessen rendezni az álláshirdetéseket legújabb, vagy aszerint, hogy hányan jelentkeztek"
+
+**Miért működött jól:**
+- Egyértelmű, konkrét feladatot fogalmazott meg
+- Két különálló funkciót kért egyszerre, amelyek logikailag összetartoznak
+- Az AI felolvasta az érintett fájlokat, megértette a kontextust, és egyszerre módosította a backendet és a frontendet
+
+---
+
+#### Iteratív finomítás
+
+**Prompt:**
+> „Ha rákattintanak a Folyamatban, Elfogadva, vagy az Elutasítva gombra, akkor szűrje le a listát, és ha újra kattintanak, törölje a szűrőt"
+
+**Miért működött jól:**
+- Az előző eredményre épített (az összesítők már meg voltak)
+- Pontosan leírta az elvárt viselkedést (toggle logika)
+- Az AI azonnal értette, hogy az előző kártyákat kell interaktívvá tenni
+
+---
+
+#### Ugyanazon funkció más oldalra való alkalmazása
+
+**Prompt:**
+> „Csináld meg ugyanezt a szűrőt a job-offer/{id} oldalon is"
+
+**Miért működött jól:**
+- Egyértelmű referencia az előző implementációra
+- Az AI felolvasta a célfájlt, azonosította a releváns szekciót, és következetesen alkalmazta a mintát
+
+---
+
+#### Iteratív komponensfejlesztés – JobOffers oldal
 
 A `JobCard` komponenst előre elkészítettem, majd az alábbi lépésekben bővítettem az oldalt:
 
@@ -177,7 +164,7 @@ A `JobCard` komponenst előre elkészítettem, majd az alábbi lépésekben bőv
 
 ---
 
-### 3.8 Globális stílusjavítás
+#### Globális stílusjavítás
 
 **Prompt:**
 > "Can you make all the buttons rounded border?"
@@ -188,7 +175,7 @@ A `JobCard` komponenst előre elkészítettem, majd az alábbi lépésekben bőv
 
 ---
 
-### 3.9 Dummy adatok betöltése JSON-ból
+#### Dummy adatok betöltése JSON-ból
 
 **Prompt:**
 > "I exported the data from the Job table in MongoDB, it's in JSON format, can you make a migration or something which will load those data into the Job table. It's in a .json file, but if needed I can copy its content into the code."
@@ -199,19 +186,45 @@ A `JobCard` komponenst előre elkészítettem, majd az alábbi lépésekben bőv
 
 ---
 
-## 6. Összefoglalás
+### 4.2 Kevésbé jól működő promptok
 
-**Az eszközről általánosan:**
+#### Túl általános kérdés konkrét elvárás nélkül
 
-Ez volt az első alkalom, hogy Claude Code-ot használtam (PhpStorm plugin-on keresztül). A modell jelentősen meggyorsította a fejlesztést és megkönnyítette a hibák keresését. Az angolul, egyszerűen megfogalmazott promptok után a generált kód jellemzően csak apró kézi módosítást igényelt. Nagyon kevés hiba fordult elő, és azokat gyorsan lehetett javítani. A kis kódbázis mérete kedvezett az AI-asszisztált fejlesztésnek, mivel a modell átlátja az egész projektet.
+**Prompt:**
+> „Milyen összesítést tudnék végezni?"
 
-**Az AI leghasznosabb volt:**
+**Miért volt kevésbé hatékony:**
+- Az AI felsorolt több lehetőséget, de nem implementált semmit
+- Egy döntési lépést igényelt a fejlesztőtől, mielőtt a tényleges munka elkezdődhetett
+- **Tanulság:** Jobb lett volna egyből a konkrét összesítést megnevezni
+
+---
+
+#### Elvont követelményellenőrzés
+
+**Prompt:**
+> „Teljesít minden követelményt?" (követelménylistával)
+
+**Miért volt részben korlátozott:**
+- Az AI nem tudta ellenőrizni a vizuális E-K diagramot (az nem kódban van)
+- A `.env` fájl tartalmát sem olvasta el automatikusan, ezért a MongoDB-használatot feltételezni kellett
+- **Tanulság:** A nem kódalapú artefaktumokra vonatkozó kérdések manuális ellenőrzést igényelnek
+
+---
+
+## 5. Összefoglalás
+
+**ChatGPT:** Hasznos volt adatgenerálásra és egyszerű hibakeresésre, de összetettebb, kódalapú feladatoknál (pl. session-kezelés) ismétlésbe esett, és a megoldást végül magam kellett megtalálnom.
+
+**Claude Code:** Ez volt az első alkalom, hogy Claude Code-ot használtam (PhpStorm plugin-on keresztül). A modell jelentősen meggyorsította a fejlesztést és megkönnyítette a hibák keresését. Az angolul, egyszerűen megfogalmazott promptok után a generált kód jellemzően csak apró kézi módosítást igényelt. Nagyon kevés hiba fordult elő, és azokat gyorsan lehetett javítani. A kis kódbázis mérete kedvezett az AI-asszisztált fejlesztésnek, mivel a modell átlátja az egész projektet.
+
+**A Claude Code leghasznosabb volt:**
 - Boilerplate kód gyors generálásában (Vue komponens logika, computed property-k)
 - Egyszerre több fájl konzisztens módosításában (backend + frontend párhuzamosan)
 - Iteratív fejlesztésnél, ahol minden lépés egy konkrét kis feladat volt
 - Dokumentáció strukturált megírásában
 
-**Az AI kevésbé volt hasznos:**
+**A Claude Code kevésbé volt hasznos:**
 - Vizuális artefaktumok (E-K diagram) létrehozásában
 - Rendszer-szintű döntések meghozatalában (ezeket a fejlesztőnek kell megtenni)
 - Általánosan megfogalmazott kérdéseknél, ahol konkrét elvárás hiányzott
