@@ -32,6 +32,8 @@ A projekt fejlesztése során két AI-eszközt használtam: ChatGPT-t a fejleszt
 
 **Prompt:**
 > "List job categories in a hierarchical format (main category → subcategories). Include at least: IT, Engineering, Business, Healthcare. Use Hungarian job title names."
+> <img width="452" height="476" alt="image" src="https://github.com/user-attachments/assets/2bb1db56-75be-40d8-8627-1a56c06f4ca9" />
+
 
 **Miért működött jól:**
 - Egyértelmű struktúrát kért (hierarchia), nem csak szabad felsorolást
@@ -44,6 +46,8 @@ A projekt fejlesztése során két AI-eszközt használtam: ChatGPT-t a fejleszt
 
 **Prompt:**
 > "Generate 15–20 realistic fake Hungarian companies. For each provide: company name (ending in Kft. or Zrt.), contact email, Hungarian address (city + street), tax ID in Hungarian format (XXXXXXXX-X-XX). Output as a numbered list."
+><img width="619" height="452" alt="image" src="https://github.com/user-attachments/assets/5e7b1497-cda0-4d2c-bc53-516d377d18c6" />
+
 
 **Miért működött jól:**
 - Pontosan meghatározta a szükséges mezőket és azok formátumát
@@ -55,9 +59,13 @@ A projekt fejlesztése során két AI-eszközt használtam: ChatGPT-t a fejleszt
 
 **1. prompt:**
 > "I'm calling `/api/user/register` from Vue 3 using Axios and getting a CORS error. The backend is Laravel 12. What are the possible causes and how do I fix them?"
+> <img width="761" height="549" alt="image" src="https://github.com/user-attachments/assets/8fe676e2-d239-41f4-a4ca-1f0e48c8c3e6" />
+
 
 **2. prompt (folytatás):**
 > "I don't have a `config/cors.php` file in my project."
+> <img width="716" height="466" alt="image" src="https://github.com/user-attachments/assets/22e17e67-9af2-476f-87a4-efccd53be901" />
+
 
 **Miért működött jól:**
 - Az első prompt megadta a technológiai kontextust (Vue 3, Laravel 12)
