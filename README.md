@@ -9,45 +9,88 @@ Webalapú álláshirdetési és -keresési rendszer, amelyen keresztül felhaszn
 | Réteg | Technológia |
 |---|---|
 | Adatbázis | MongoDB |
-| Backend | PHP 8, Laravel 12 |
+| Backend | PHP 8.2+, Laravel 12 |
 | Autentikáció | Laravel Sanctum (session-alapú) |
 | Frontend | Vue 3, TypeScript, Vite, Tailwind CSS |
 
 ---
 
-## Telepítés és futtatás
+## Előfeltételek
 
-### Előfeltételek
-
-- PHP >= 8.2
+- PHP >= 8.2 **a MongoDB kiterjesztéssel** (`ext-mongodb`)
 - Composer
 - Node.js >= 18
-- MongoDB (helyi példány a `mongodb://localhost:27017` címen)
+- MongoDB szerver (lokális vagy Docker vagy MongoDB Atlas)
 
-### 1. Függőségek telepítése
+---
+
+## 1. lépés – MongoDB telepítése
+
+### A) Lokális MongoDB (ajánlott)
+
+Töltsd le és telepítsd: https://www.mongodb.com/try/download/community
+
+Telepítés után a MongoDB automatikusan elindul a háttérben (`mongodb://localhost:27017`).
+
+### B) Docker
+
+Ha van Docker a gépeden:
 
 ```bash
-composer install
-npm install
+docker run -d --name mongodb -p 27017:27017 mongo:latest
 ```
 
-### 2. Környezeti konfiguráció
+### C) MongoDB Atlas (felhő)
+
+1. Hozz létre ingyenes fiókot: https://www.mongodb.com/atlas
+2. Hozz létre egy clustert, majd másold ki a connection string-et
+3. A `.env` fájlban add meg a teljes URI-t:
+
+```env
+DB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/allaskereso
+```
+
+---
+
+## 2. lépés – PHP MongoDB kiterjesztés telepítése
+
+### XAMPP-on (Windows)
+
+1. Ellenőrizd a PHP verziódat: `php -v`
+2. Töltsd le a megfelelő `php_mongodb.dll` fájlt: https://pecl.php.net/package/mongodb
+   - Válaszd ki a PHP verziódnak és architektúrádnak megfelelőt (pl. `8.2 Thread Safe x64`)
+3. Másold a `.dll` fájlt a `C:\xampp\php\ext\` mappába
+4. Nyisd meg a `C:\xampp\php\php.ini` fájlt, és add hozzá:
+   ```
+   extension=mongodb
+   ```
+5. Indítsd újra az Apache-ot az XAMPP Controlban
+
+### Ellenőrzés
 
 ```bash
+php -m | grep mongodb
+```
+
+Ha megjelenik a `mongodb`, a kiterjesztés aktív.
+
+---
+
+## 3. lépés – Az alkalmazás telepítése
+
+```bash
+# PHP és npm függőségek telepítése
+composer install
+npm install
+
+# Környezeti fájl létrehozása
 cp .env.example .env
 php artisan key:generate
 ```
 
-A `.env` fájlban ellenőrizd az adatbázis-beállításokat:
+---
 
-```env
-DB_CONNECTION=mongodb
-DB_HOST=127.0.0.1
-DB_PORT=27017
-DB_DATABASE=allaskereso
-```
-
-### 3. Adatbázis migrálása és demo adatok betöltése
+## 4. lépés – Adatbázis feltöltése
 
 ```bash
 php artisan migrate:fresh --seed
@@ -55,15 +98,13 @@ php artisan migrate:fresh --seed
 
 Ez létrehozza az összes kollekciót és feltölti őket demo adatokkal (358 rekord).
 
-### 4. Fejlesztői szerver indítása
+---
+
+## 5. lépés – Fejlesztői szerver indítása
 
 ```bash
 composer run dev
 ```
-
-Ez egyszerre indítja el:
-- Laravel backend: `http://localhost:8000`
-- Vite dev szerver (HMR)
 
 Az alkalmazás elérhető: **http://localhost:8000**
 
