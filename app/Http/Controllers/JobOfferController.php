@@ -22,16 +22,24 @@ class JobOfferController extends Controller
 
         $offers = $query->get();
 
+        $offerIds = $offers->pluck('id');
+
         $applications = Application::where('user_id', Auth::id())
-            ->whereIn('job_offer_id', $offers->pluck('id'))
+            ->whereIn('job_offer_id', $offerIds)
             ->get()
             ->keyBy('job_offer_id');
 
-        $offers = $offers->map(function ($offer) use ($applications) {
+        $applicationCounts = Application::whereIn('job_offer_id', $offerIds)
+            ->get()
+            ->groupBy('job_offer_id')
+            ->map->count();
+
+        $offers = $offers->map(function ($offer) use ($applications, $applicationCounts) {
             $application = $applications->get($offer->id);
             return array_merge($offer->toArray(), [
                 'application_id'     => $application?->id,
                 'application_status' => $application?->status,
+                'applications_count' => $applicationCounts->get($offer->id, 0),
             ]);
         });
 

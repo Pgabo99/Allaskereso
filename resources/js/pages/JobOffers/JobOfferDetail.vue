@@ -64,6 +64,24 @@ const applyErrors = ref<Record<string, string[]>>({});
 const cvFile = ref<File | null>(null);
 const applicants = ref<ApplicantRow[]>([]);
 
+const applicantStatusFilter = ref<'PENDING' | 'APPROVED' | 'DECLINED' | null>(null);
+
+const applicantStatusCounts = computed(() => ({
+    pending:  applicants.value.filter(a => a.status === 'PENDING').length,
+    approved: applicants.value.filter(a => a.status === 'APPROVED').length,
+    declined: applicants.value.filter(a => a.status === 'DECLINED').length,
+}));
+
+const toggleApplicantFilter = (status: 'PENDING' | 'APPROVED' | 'DECLINED') => {
+    applicantStatusFilter.value = applicantStatusFilter.value === status ? null : status;
+};
+
+const filteredApplicants = computed(() =>
+    applicantStatusFilter.value
+        ? applicants.value.filter(a => a.status === applicantStatusFilter.value)
+        : applicants.value
+);
+
 const backLink = computed(() => {
     if (route.query.from === 'my-applications') return '/my-applications';
     const companyId = route.query.company_id;
@@ -385,8 +403,35 @@ onMounted(async () => {
             <!-- Applicants table -->
             <div v-if="jobOffer.can_handle_applications"
                  class="mt-6 bg-white border border-default rounded-lg shadow-xs p-6">
-                <h2 class="text-xl font-semibold text-heading mb-4">Jelentkezők</h2>
+                <h2 class="text-xl font-semibold text-heading mb-4">Jelentkezők ({{ applicants.length }} fő)</h2>
+                <div v-if="applicants.length > 0" class="flex gap-3 mb-4">
+                    <button @click="toggleApplicantFilter('PENDING')"
+                            :class="applicantStatusFilter === 'PENDING'
+                                ? 'bg-yellow-200 border-yellow-400 ring-2 ring-yellow-300'
+                                : 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100'"
+                            class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer transition-all">
+                        <span class="text-lg font-bold text-yellow-600">{{ applicantStatusCounts.pending }}</span>
+                        <span class="text-xs text-yellow-700">Folyamatban</span>
+                    </button>
+                    <button @click="toggleApplicantFilter('APPROVED')"
+                            :class="applicantStatusFilter === 'APPROVED'
+                                ? 'bg-green-200 border-green-400 ring-2 ring-green-300'
+                                : 'bg-green-50 border-green-200 hover:bg-green-100'"
+                            class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer transition-all">
+                        <span class="text-lg font-bold text-green-600">{{ applicantStatusCounts.approved }}</span>
+                        <span class="text-xs text-green-700">Elfogadva</span>
+                    </button>
+                    <button @click="toggleApplicantFilter('DECLINED')"
+                            :class="applicantStatusFilter === 'DECLINED'
+                                ? 'bg-red-200 border-red-400 ring-2 ring-red-300'
+                                : 'bg-red-50 border-red-200 hover:bg-red-100'"
+                            class="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer transition-all">
+                        <span class="text-lg font-bold text-red-600">{{ applicantStatusCounts.declined }}</span>
+                        <span class="text-xs text-red-700">Elutasítva</span>
+                    </button>
+                </div>
                 <p v-if="applicants.length === 0" class="text-body text-sm">Még nincs jelentkező.</p>
+                <p v-else-if="filteredApplicants.length === 0" class="text-body text-sm">Nincs ilyen státuszú jelentkező.</p>
                 <div v-else class="overflow-x-auto">
                     <table class="w-full text-sm text-left text-body">
                         <thead class="text-xs text-gray-500 uppercase border-b border-default">
@@ -400,7 +445,7 @@ onMounted(async () => {
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="row in applicants" :key="row.id" class="border-b border-default last:border-0">
+                        <tr v-for="row in filteredApplicants" :key="row.id" class="border-b border-default last:border-0">
                             <td class="py-3 pr-4 font-medium text-heading">{{ row.applicant?.name ?? '–' }}</td>
                             <td class="py-3 pr-4">{{ row.applicant?.email ?? '–' }}</td>
                             <td class="py-3 pr-4">{{ row.applicant?.birth_date ?? '–' }}</td>

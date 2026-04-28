@@ -23,6 +23,8 @@ interface JobOffer {
     location: string;
     work_mode: string;
     job_id: string;
+    created_at: string;
+    applications_count: number;
     company?: { id: string; name: string };
     application_id?: string;
     application_status?: 'PENDING' | 'APPROVED' | 'DECLINED';
@@ -44,8 +46,15 @@ const filters = ref({
     salary_min: '',
 });
 
+const sortBy = ref<'newest' | 'most_applications'>('newest');
+
+const sortOptions = [
+    { value: 'newest', label: 'Legújabb' },
+    { value: 'most_applications', label: 'Legtöbb jelentkező' },
+];
+
 const filteredOffers = computed(() => {
-    return jobOffers.value.filter(offer => {
+    const filtered = jobOffers.value.filter(offer => {
         if (filters.value.search && !offer.title.toLowerCase().includes(filters.value.search.toLowerCase())) {
             return false;
         }
@@ -60,6 +69,11 @@ const filteredOffers = computed(() => {
         }
         return true;
     });
+
+    if (sortBy.value === 'most_applications') {
+        return [...filtered].sort((a, b) => b.applications_count - a.applications_count);
+    }
+    return [...filtered].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 });
 
 const fetchJobOffers = async () => {
@@ -78,15 +92,26 @@ onMounted(fetchJobOffers);
     <div class="p-6">
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-3xl text-slate-800">Álláshirdetések</h1>
-            <button @click="showFilters = !showFilters"
-                    class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none inline-flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                     stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
-                </svg>
-                Szűrés
-            </button>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M7 12h10M11 17h2"/>
+                    </svg>
+                    <select v-model="sortBy"
+                            class="text-sm text-slate-700 bg-white border border-slate-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-medium cursor-pointer">
+                        <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                    </select>
+                </div>
+                <button @click="showFilters = !showFilters"
+                        class="text-white bg-gray-800 box-border border border-transparent hover:bg-black hover:cursor-pointer focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none inline-flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
+                    </svg>
+                    Szűrés
+                </button>
+            </div>
         </div>
 
         <form v-if="showFilters"
