@@ -104,7 +104,7 @@ Ez létrehozza az összes kollekciót és feltölti őket demo adatokkal (358 re
 ## 5. lépés – Fejlesztői szerver indítása
 
 ```bash
-composer run dev
+npm run dev
 ```
 
 Az alkalmazás elérhető: **http://localhost:8000**
