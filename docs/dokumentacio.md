@@ -17,15 +17,15 @@ Az **Álláskereső** egy webalapú álláshirdetési és -keresési platform. A
 
 ## 2. Technológiai stack és indoklás
 
-### 2.1 MongoDB (adatbázis)
+### 2.1 MongoDB Atlas (adatbázis)
 
-A projekt MongoDB NoSQL dokumentum-alapú adatbázist használ a `mongodb/laravel-mongodb` csomagon keresztül.
+A projekt MongoDB Atlas felhőalapú, NoSQL dokumentum-alapú adatbázist használ a `mongodb/laravel-mongodb` csomagon keresztül.
 
 **Indoklás:**
 - A `Job` (munkakör-kategória) egyed önhivatkozó hierarchiát valósít meg (főkategória → alkategória), amit dokumentum-alapú adatbázisban természetesebb kezelni
 - Az `Employee` egyed a `rights` mezőben tömbként tárolja a jogosultságokat — ezt MongoDB natívan támogatja sémaváltás nélkül
 - A MongoDB rugalmas dokumentumszerkezete lehetővé teszi a gyors fejlesztést és a séma iterálását
-- Könnyen hostolható lokálisan, konténerben (Docker) vagy felhőben (MongoDB Atlas)
+- A MongoDB Atlas felhőalapú hosztolása lehetővé teszi, hogy az adatbázis külön telepítése nélkül is futtatható legyen az alkalmazás
 
 ### 2.2 Laravel 12 (backend)
 

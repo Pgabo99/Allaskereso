@@ -24,31 +24,9 @@ Webalapú álláshirdetési és -keresési rendszer, amelyen keresztül felhaszn
 
 ---
 
-## 1. lépés – MongoDB telepítése
+## 1. lépés – MongoDB Atlas kapcsolat
 
-### A) Lokális MongoDB (ajánlott)
-
-Töltsd le és telepítsd: https://www.mongodb.com/try/download/community
-
-Telepítés után a MongoDB automatikusan elindul a háttérben (`mongodb://localhost:27017`).
-
-### B) Docker
-
-Ha van Docker a gépeden:
-
-```bash
-docker run -d --name mongodb -p 27017:27017 mongo:latest
-```
-
-### C) MongoDB Atlas (felhő)
-
-1. Hozz létre ingyenes fiókot: https://www.mongodb.com/atlas
-2. Hozz létre egy clustert, majd másold ki a connection string-et
-3. A `.env` fájlban add meg a teljes URI-t:
-
-```env
-DB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/allaskereso
-```
+Az adatbázis MongoDB Atlas felhőben van hosztolva, a kapcsolati adatok már szerepelnek a `.env.example` fájlban — külön konfiguráció nem szükséges.
 
 ---
 
