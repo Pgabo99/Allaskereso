@@ -20,13 +20,36 @@ Webalapú álláshirdetési és -keresési rendszer, amelyen keresztül felhaszn
 - PHP >= 8.2 **a MongoDB kiterjesztéssel** (`ext-mongodb`)
 - Composer
 - Node.js >= 18
-- MongoDB szerver (lokális vagy Docker vagy MongoDB Atlas)
+- MongoDB szerver (lokális telepítés **vagy** MongoDB Atlas)
 
 ---
 
-## 1. lépés – MongoDB Atlas kapcsolat
+## 1. lépés – MongoDB beállítása
 
-Az adatbázis MongoDB Atlas felhőben van hosztolva, a kapcsolati adatok már szerepelnek a `.env.example` fájlban — külön konfiguráció nem szükséges.
+Válassz az alábbi két lehetőség közül:
+
+### A) MongoDB Atlas (felhő)
+
+1. Hozz létre egy fiókot a [mongodb.com/atlas](https://www.mongodb.com/atlas) oldalon
+2. Hozz létre egy ingyenes clustert (M0)
+3. Adj hozzá egy adatbázis-felhasználót és engedélyezd a hozzáférést (IP whitelist)
+4. Másold ki a connection string-et, és állítsd be a `.env` fájlban:
+   ```
+   DB_CONNECTION=mongodb
+   DB_URI=mongodb+srv://<felhasználó>:<jelszó>@<cluster>.mongodb.net/
+   DB_DATABASE=allaskereso
+   ```
+
+### B) Lokális MongoDB
+
+1. Telepítsd a [MongoDB Community Server](https://www.mongodb.com/try/download/community)-t
+2. Indítsd el a MongoDB szolgáltatást
+3. A `.env` fájlban állítsd be:
+   ```
+   DB_CONNECTION=mongodb
+   DB_URI=mongodb://localhost:27017
+   DB_DATABASE=allaskereso
+   ```
 
 ---
 
